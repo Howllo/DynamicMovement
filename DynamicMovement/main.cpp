@@ -34,7 +34,6 @@ int main(int argc, char* argv[])
     auto* fleeSteer = new SteeringOutput();
     auto* seekSteer = new SteeringOutput();
     auto* arriveSteer = new SteeringOutput();
-
     
     // Continue Character
     auto* continueCharacter = new Character(2601, CONTINUE, new VectorMath(0.0, 0.0),
@@ -78,12 +77,14 @@ int main(int argc, char* argv[])
         SteeringOutput* new_object;
         for(const auto& v_character : vCharacters)
         {
+            // Time Step 0.
             if(currentDeltaTime == 0.0)
             {
                 printCharacter(v_character, outfile, currentDeltaTime);
                 continue;
             }
-            
+
+            // Calculate Data
             switch (v_character->getSteerBehavior())
             {
                 case CONTINUE:
@@ -114,8 +115,12 @@ int main(int argc, char* argv[])
                     std::cout << "Character: " << v_character->getCharacterID() << " is set to behavior NONE. Fix it." << std::endl;
                     break;
             }
+
+            // Print
             printCharacter(v_character, outfile, currentDeltaTime);
         }
+
+        // Update Delta Time
         currentDeltaTime += deltaTime;
     }
     std::cout << "Finished printing!" << std::endl;
