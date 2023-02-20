@@ -16,7 +16,8 @@ enum CharacterBehavior
     CONTINUE = 1,
     SEEK = 6,
     FLEE = 7,
-    ARRIVE = 8
+    ARRIVE = 8,
+    FOLLOW_PATH = 4444,
 };
 
 class Character
@@ -41,6 +42,7 @@ public:
     Character(int id, CharacterBehavior behavior, VectorMath* iposition, VectorMath* ivelocity, VectorMath* ilinear,
         double iorientation, double irotation, double iangular, double maxvelocity, double maxacceleration,
         CharacterBehavior target, float arrivalradius, double slowingradius, double timetotarget, bool collision);
+    Character(int id, Character)
     ~Character();
 
     // Just bunch of Getters
