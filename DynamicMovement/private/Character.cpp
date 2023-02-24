@@ -27,6 +27,35 @@ Character::Character(int id, CharacterBehavior behavior, VectorMath* iposition, 
     slowingRadius = slowingradius;
     timeToTarget = timetotarget;
     hasCollided = collision;
+
+    // Unused
+    this->pathToFollow = 0.0;
+    this->pathOffset = 0.0;
+}
+
+Character::Character(int id, CharacterBehavior behavior, VectorMath* iposition, VectorMath* ivelocity, VectorMath* ilinear,
+    double iorientation, double iangular, double maxvelocity, double maxacceleration, double pathToFollow, double pathOffset,
+    bool collision)
+{
+    ID = id;
+    this->behavior = behavior;
+    iPosition = iposition;
+    iVelocity = ivelocity;
+    iLinear = ilinear;
+    iOrientation = iorientation;
+    iAngular = iangular;
+    maxVelocity = maxvelocity;
+    maxAcceleration = maxacceleration;
+    this->pathToFollow = pathToFollow;
+    this->pathOffset = pathOffset;
+    hasCollided = collision;
+
+    // Unused
+    iRotation = 0.0;
+    this->target = NONE;
+    arrivalRadius = 0.0;
+    slowingRadius = 0.0;
+    timeToTarget = 0.0;
 }
 
 Character::~Character()

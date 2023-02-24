@@ -112,3 +112,8 @@ SteeringOutput* DynamicMovement::getSteeringArrive(Character* character, Charact
     delete direction;
     return result;
 }
+
+SteeringOutput* DynamicMovement::getSteeringFollowPath(Character* character, PathAndMath* path)
+{
+    
+}

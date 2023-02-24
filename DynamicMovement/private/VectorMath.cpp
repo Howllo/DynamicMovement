@@ -9,6 +9,7 @@
 #include "VectorMath.h"
 #include <cmath>
 #include <iostream>
+#include "PathAndMath.h"
 
 VectorMath::VectorMath()
 {
@@ -22,10 +23,10 @@ VectorMath::VectorMath(const double x_in, const double z_in)
     z = z_in;
 }
 
-VectorMath::VectorMath(double axis[])
+void VectorMath::setPoints(VectorMath* VM)
 {
-    x = axis[0];
-    z = axis[1];
+    x = VM->x;
+    z = VM->z;
 }
 
 double VectorMath::vector_length()
@@ -49,6 +50,13 @@ void VectorMath::AddVector(const VectorMath* n)
     z += n->z;
 }
 
+VectorMath* VectorMath::AddTwoVectors(const VectorMath* v, const VectorMath* n)
+{
+    if(!v || !n) return nullptr;
+    VectorMath* temp = new VectorMath();
+    
+}
+
 void VectorMath::SubtractVector(const VectorMath* n)
 {
     if(!n) return;
@@ -63,6 +71,15 @@ void VectorMath::SubtractVector(const VectorMath* v, const VectorMath* n)
     z = v->z - n->z;
 }
 
+VectorMath* VectorMath::SubtractVectors(const VectorMath* v, const VectorMath* n)
+{
+    auto* temp = new VectorMath();
+    if(!n || !v) return nullptr;
+    temp->x = v->x - n->x;
+    temp->z = v->z - n->z;
+    return temp;
+}
+
 void VectorMath::MultiplyDouble(double incoming)
 {
     x *= incoming;
@@ -73,6 +90,17 @@ void VectorMath::DivideDouble(double incoming)
 {
     x /= incoming;
     z /= incoming;
+}
+
+double VectorMath::vectorDot(VectorMath* p1, VectorMath* p2, bool deleteObjects)
+{
+    const double T = (p1->x * p2->x) + (p1->z * p2->z);
+    if(deleteObjects)
+    {
+        delete p1;
+        delete p2;
+    }
+    return T;
 }
 
 VectorMath* VectorMath::Clone()

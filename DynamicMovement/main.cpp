@@ -19,7 +19,8 @@ enum ETestChar
     ETestContinue,
     ETestFlee,
     ETestSeek,
-    ETestArrive
+    ETestArrive,
+    ETestPathFollowing,
 };
 
 // Prototypes
@@ -45,6 +46,9 @@ int main(int argc, char* argv[])
         std::cout << "Error. Fail to open file." << std::endl; 
         return 0;
     }
+
+    // Test Characters
+    Character* followPath = createNewCharacter(ETestPathFollowing);
     
     // Main Loop
     while(currentDeltaTime <= stopTime)
@@ -197,6 +201,10 @@ Character* createNewCharacter(ETestChar tChar)
                 new VectorMath(-9.0, 4.0), new VectorMath(0.0, 0.0), 3.14159265358979,
                 0.0, 0.0, 10.0, 2.0, CONTINUE, 4.0, 32,
                 1.0, false);
+        case ETestPathFollowing:
+            return new Character(2701, FOLLOW_PATH, new VectorMath(20.0, 95.0),
+                new VectorMath(0.0, 0.0), new VectorMath(0.0, 0.0), 0.0, 0.0,
+                4, 2.0, 1.0, 0.04, false);
     }
     return nullptr;
 }

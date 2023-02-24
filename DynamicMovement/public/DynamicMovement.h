@@ -37,4 +37,12 @@ public:
      * \return Returns a SteeringOuput object.
      */
     SteeringOutput* getSteeringArrive(Character* character, Character* target);
+
+    /**
+     * \brief Used to move character along a path.
+     * \param character Takes in a character object to move.
+     * \param path Takes in a path object to move the character.
+     * \return Returns a steering output object.
+     */
+    SteeringOutput* getSteeringFollowPath(Character* character, class PathAndMath* path);
 };

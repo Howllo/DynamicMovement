@@ -22,11 +22,11 @@ class VectorMath
     VectorMath(double x_in, double z_in);
 
     /**
-     * \brief Used for constructing a vector object with array.
-     * \param axis Takes in a double array for the set X and Z axis.
+     * \brief Used for temporary requirements.
+     * \param VM Takes in VectorMath Object to set points.
      */
-    VectorMath(double axis[]);
-
+     void setPoints(VectorMath* VM);
+ 
     /**
      * \brief Used to get the length using parthenon theorem.
      * \return Returns a double of the parthenon theorem.
@@ -45,7 +45,15 @@ class VectorMath
      * \param n Takes in a vector to be added.
      */
     void AddVector(const VectorMath* n);
-    
+
+    /**
+     * \brief Used as a static function to add two vectors.
+     * \param v Takes in a first vector to be added.
+     * \param n Takes in a second vector to be added.
+     * \return Returns a NEW vector object.
+     */
+    static VectorMath* AddTwoVectors(const VectorMath* v, const VectorMath* n);
+ 
     /**
      * \brief Used to subtract objects.
      *        this -= n
@@ -54,12 +62,21 @@ class VectorMath
     void SubtractVector(const VectorMath* n);
 
     /**
+    * \brief Use to get the difference between two vector objects for creation of a new vector object.
+    *        results = v - n 
+    * \param v First vector object that is being subtracted from.
+    * \param n Second vector object that is being subtracted.
+    */
+    void SubtractVector(const VectorMath* v, const VectorMath* n);
+
+    /**
      * \brief Use to get the difference between two vector objects for creation of a new vector object.
      *        results = v - n 
      * \param v First vector object that is being subtracted from.
      * \param n Second vector object that is being subtracted.
+     * \return Returns a NEW VectorMath object.
      */
-    void SubtractVector(const VectorMath* v, const VectorMath* n);
+    static VectorMath* SubtractVectors(const VectorMath* v, const VectorMath* n);
     
     /**
      * \brief Used for multiplication of the X and Z coordinates.
@@ -75,6 +92,15 @@ class VectorMath
      */
     void DivideDouble(double incoming);
 
+    /**
+     * \brief Used to get the distance between two point.
+     * \param p1 Takes in a VectorMath object for point one.
+     * \param p2 Takes in a VectorMath object for point one.
+     * \param deleteObjects If true P1 and P2 will be deleted.
+     * \return Returns double of a dot product in 2D.
+     */
+    static double vectorDot(VectorMath* p1, VectorMath* p2, bool deleteObjects);
+ 
     /**
      * \brief Used to clone VectorMath.
      * \return Returns a VectorMath objects.
