@@ -38,6 +38,7 @@ VectorMath* PathAndMath::closestPointSegment(VectorMath* Q, VectorMath* A, Vecto
         VectorMath* temp = VectorMath::SubtractVectors(B, A);
         temp->MultiplyDouble(T);
         temp->AddVector(A);
+        temp->tempObject = true;
         return temp;
     }
 }
@@ -55,8 +56,9 @@ VectorMath* PathAndMath::getParam(Character* character)
         pointOne->setPoints(points[i]);
         if((i + 1) <= points.size())
             pointTwo->setPoints(points[i + 1]);
+        
         VectorMath* checkPoint = closestPointSegment(character->getPosition(), pointOne, pointTwo);
-        double checkDistance = distancePointPoint(character->getPosition(), checkPoint);
+        const double checkDistance = distancePointPoint(character->getPosition(), checkPoint);
 
         if(checkDistance < closestDistance)
         {
@@ -64,6 +66,9 @@ VectorMath* PathAndMath::getParam(Character* character)
             closestDistance = checkDistance;
             closestSegment = i;
         }
+
+        if(checkPoint->tempObject)
+            delete checkPoint;
         delete pointOne;
         delete pointTwo;
     }

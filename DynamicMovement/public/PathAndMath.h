@@ -3,9 +3,16 @@
 #include <vector>
 #include "VectorMath.h"
 
+struct path_assemble
+{
+
+};
+
+
 class PathAndMath
 {
     std::vector<VectorMath*> points;
+
 public:
     PathAndMath();
     PathAndMath(double x_in, double z_in);
@@ -26,7 +33,7 @@ public:
      * \return Returns closest segment to query point in 2D.
      */
     VectorMath* closestPointSegment(VectorMath* Q, VectorMath* A, VectorMath* B);
-    
+
     /**
      * \brief Used to get the closest path to the character.
      * \param character Takes a character to get the position from.

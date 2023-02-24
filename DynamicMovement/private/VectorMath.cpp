@@ -15,12 +15,14 @@ VectorMath::VectorMath()
 {
     x = 0.0;
     z = 0.0;
+    tempObject = false;
 }
 
 VectorMath::VectorMath(const double x_in, const double z_in)
 {
     x = x_in;
     z = z_in;
+    tempObject = false;
 }
 
 void VectorMath::setPoints(VectorMath* VM)

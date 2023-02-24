@@ -9,6 +9,10 @@ class VectorMath
     // Z axis of the vector.
     double z;
 
+    // Keep track of temp object. Used for closestPointSegment tracking.
+    // This is to keep from accidentally deleting in use object.
+    bool tempObject;
+ 
     /**
     * \brief Used for creating new vector objects with out large parameter from subtractions, adding, or multiplication. 
     */
