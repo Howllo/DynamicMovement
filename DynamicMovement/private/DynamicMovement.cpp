@@ -166,7 +166,7 @@ void DynamicMovement::checkCharacterBehavior(Character* character, SteeringOutpu
             break;
         case ARRIVE:
             MemoryManagement(newSteer, arriveSteer);
-            seekSteer = newSteer;
+            arriveSteer = newSteer;
             break;
         case FOLLOW_PATH:
             MemoryManagement(newSteer, followSteer);
@@ -174,6 +174,6 @@ void DynamicMovement::checkCharacterBehavior(Character* character, SteeringOutpu
             break;
         case NONE:
             std::cout << "Character: " << character->getCharacterID() << " is set to behavior NONE. Fix it." << std::endl;
-        break;
+            break;
     }
 }
