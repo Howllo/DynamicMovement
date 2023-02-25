@@ -8,9 +8,8 @@
 #pragma once
 
 #include <vector>
-#include "VectorMath.h"
 
-struct path_assemble
+/*struct path_assemble
 {
     int ID;
     double x;
@@ -18,12 +17,12 @@ struct path_assemble
     double distance;
     VectorMath* param;
     int segment;
-};
+};*/
 
 class PathAlgorithm
 {
-    std::vector<VectorMath*> points;
-    std::vector<path_assemble*> normalizedPoints;
+    std::vector<class VectorMath*> points;
+    //std::vector<path_assemble*> normalizedPoints;
 public:
     PathAlgorithm();
     PathAlgorithm(double x_in, double z_in);

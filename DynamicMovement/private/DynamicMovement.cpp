@@ -6,12 +6,30 @@
  *
  ***************************************/
 
-#include "DynamicMovement.h"
-#include "SteeringOutput.h"
-#include "PathAlgorithm.h"
-#include "Character.h"
+#include "../public/DynamicMovement.h"
+#include "../public/SteeringOutput.h"
+#include "../public/PathAlgorithm.h"
+#include "../public/Character.h"
 #include <cmath>
 #include <iostream>
+
+DynamicMovement::DynamicMovement()
+{
+    conSteer = new SteeringOutput();
+    fleeSteer  = new SteeringOutput();
+    seekSteer  = new SteeringOutput();
+    arriveSteer = new SteeringOutput();
+    followSteer = new SteeringOutput();
+}
+
+DynamicMovement::~DynamicMovement()
+{
+    delete conSteer;
+    delete fleeSteer;
+    delete seekSteer;
+    delete arriveSteer;
+    delete followSteer;
+}
 
 void DynamicMovement::dynamicUpdate(Character* character, SteeringOutput* steering, const double deltaTime)
 {
@@ -121,4 +139,41 @@ SteeringOutput* DynamicMovement::getSteeringFollowPath(Character* character, Pat
     Character* target = new Character();
     target->setPosition(PathAlgorithm::pathGetPosition(path, targetParam));
     return getSteeringSeek(character, target);
+}
+
+void DynamicMovement::MemoryManagement(SteeringOutput* newOutput, SteeringOutput* oldOutput)
+{
+    if(!oldOutput || !newOutput || newOutput == oldOutput)
+        return;
+    delete oldOutput;
+}
+
+void DynamicMovement::checkCharacterBehavior(Character* character, SteeringOutput* newSteer)
+{
+    switch(character->getSteerBehavior())
+    {
+        case CONTINUE:
+            MemoryManagement(newSteer, conSteer);
+            conSteer = newSteer;
+            break;
+        case FLEE:
+            MemoryManagement(newSteer, fleeSteer);
+            fleeSteer = newSteer;
+            break;
+        case SEEK:
+            MemoryManagement(newSteer, seekSteer);
+            seekSteer = newSteer;
+            break;
+        case ARRIVE:
+            MemoryManagement(newSteer, arriveSteer);
+            seekSteer = newSteer;
+            break;
+        case FOLLOW_PATH:
+            MemoryManagement(newSteer, followSteer);
+            followSteer = newSteer;
+            break;
+        case NONE:
+            std::cout << "Character: " << character->getCharacterID() << " is set to behavior NONE. Fix it." << std::endl;
+        break;
+    }
 }

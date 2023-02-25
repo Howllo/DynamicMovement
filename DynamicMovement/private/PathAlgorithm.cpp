@@ -7,9 +7,9 @@
  ***************************************/
 
 #include "PathAlgorithm.h"
-#include <complex.h>
+#include "VectorMath.h"
+#include <complex>
 #include "Character.h"
-#include "cmath"
 
 PathAlgorithm::PathAlgorithm()
 {
@@ -28,11 +28,11 @@ PathAlgorithm::~PathAlgorithm()
         points.pop_back();
     }
 
-    while(!normalizedPoints.empty())
+    /*while(!normalizedPoints.empty())
     {
         delete points.back();
         points.pop_back();
-    }
+    }*/
 }
 
 void PathAlgorithm::AddPath(double x_in, double z_in)

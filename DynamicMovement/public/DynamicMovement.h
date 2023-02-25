@@ -7,12 +7,27 @@
  ***************************************/
 
 #pragma once
+#include "SteeringOutput.h"
 
 class DynamicMovement
 {
     double stopVecloity = 0.02;
+    class SteeringOutput* conSteer;
+    SteeringOutput* fleeSteer;
+    SteeringOutput* seekSteer;
+    SteeringOutput* arriveSteer;
+    SteeringOutput* followSteer;
 public:
-    void dynamicUpdate(class Character* character, class SteeringOutput* steering, double deltaTime);
+    DynamicMovement();
+    ~DynamicMovement();
+    
+    /**
+     * \brief Used to update the character position through steering object and delta time.
+     * \param character Takes in a character to be moved.
+     * \param steering Takes in a SteeringObject to change the objects movement.
+     * \param deltaTime Takes in a time scale as delta time.
+     */
+    void dynamicUpdate(class Character* character, SteeringOutput* steering, double deltaTime);
  
     /**
      * \brief Use to get movement of the continue character object.
@@ -52,4 +67,19 @@ public:
      * \return Returns a steering output object.
      */
     SteeringOutput* getSteeringFollowPath(Character* character, class PathAlgorithm* path);
+
+private:
+    /**
+     * \brief Use for memory management to prevent a steer object memory leak.
+     * \param newOutput Takes in a new steer object to be compared to old steer object.
+     * \param oldOutput Uses the old steer object be compared.
+     */
+    void MemoryManagement(SteeringOutput* newOutput, SteeringOutput* oldOutput);
+
+    /**
+     * \brief Used to check the behavior of the character object to reduce the size of function.
+     * \param character Takes in a character to get the behavior of the character.
+     * \param newSteer Takes in a the new steer object to be sent to memory management.
+     */
+    void checkCharacterBehavior(Character* character, SteeringOutput* newSteer);
 };

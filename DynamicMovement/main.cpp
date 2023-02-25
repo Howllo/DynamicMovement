@@ -9,8 +9,7 @@
 #include <iostream>
 #include "Character.h"
 #include "DynamicMovement.h"
-#include <fstream>
-#include <vector>
+#include "PrintClass.h"
 #include <iomanip>
 #include "SteeringOutput.h"
 #include "PathAlgorithm.h"
@@ -25,20 +24,18 @@ enum ETestChar
 };
 
 // Prototypes
-void createCharacterMovement(Character* v_character, Character* target, double deltaTime);
-void checkForZeroes(double check, std::ofstream& outfile);
-bool MemoryManagement(SteeringOutput* newOutput, SteeringOutput* oldOutput);
-void printCharacter(Character* characters, std::ofstream &outfile, double deltaTime);
+void createCharacterMovement(Character* v_character, Character* target, PathAlgorithm* _path, DynamicMovement* dynamicMovement,
+    double deltaTime);
 Character* createNewCharacter(ETestChar tChar);
-
 
 int main(int argc, char* argv[])
 {
     // Simulation
-    const double stopTime = 50.0;
+    const double stopTime = 125.0;
     const double deltaTime = 0.50;
     double currentDeltaTime = 0.0;
     auto* path = new PathAlgorithm();
+    auto* dynamicMovement = new DynamicMovement();
     
     // Create File
     std::ofstream outfile;
@@ -65,125 +62,51 @@ int main(int argc, char* argv[])
     // Main Loop
     while(currentDeltaTime <= stopTime)
     {
+        if(currentDeltaTime == 0.0)
+        {
+            //PrintClass::printCharacter()
+        }
+        
         // Update Delta Time
         currentDeltaTime += deltaTime;
     }
     std::cout << "Finished printing!" << std::endl;
     outfile.close();
+    delete path;
+    delete followPath;
+    delete dynamicMovement;
     return 0;
 }
 
-void createCharacterMovement(Character* v_character, Character* target, double deltaTime)
+void createCharacterMovement(Character* v_character, Character* target, PathAlgorithm* _path, DynamicMovement* dynamicMovement,
+    double deltaTime)
 {
-    //  Creating the main dynamic class to run simulation.
-    auto* dynamicMovement = new DynamicMovement();
-    
-    // Memory Management
-    auto* conSteer = new SteeringOutput();
-    auto* fleeSteer = new SteeringOutput();
-    auto* seekSteer = new SteeringOutput();
-    auto* arriveSteer = new SteeringOutput();
-    SteeringOutput* new_object;
-    
     // Calculate Data
     switch (v_character->getSteerBehavior())
     {
         case CONTINUE:
-            new_object = dynamicMovement->getSteeringContinue(v_character);
-            if(MemoryManagement(new_object, conSteer))
-                conSteer = new_object;
-            dynamicMovement->dynamicUpdate(v_character, conSteer, deltaTime);
+            dynamicMovement->dynamicUpdate(v_character, dynamicMovement->getSteeringContinue(v_character), deltaTime);
             break;
         case FLEE:
-            new_object = dynamicMovement->getSteeringFlee(v_character, target);
-            if(MemoryManagement(new_object, fleeSteer))
-                fleeSteer = new_object;
-            dynamicMovement->dynamicUpdate(v_character, fleeSteer,deltaTime);
+            dynamicMovement->dynamicUpdate(v_character, dynamicMovement->getSteeringFlee(v_character, target),deltaTime);
             break;
         case SEEK:
-            new_object = dynamicMovement->getSteeringSeek(v_character, target);
-            if(MemoryManagement(new_object, seekSteer))
-                seekSteer = new_object;
-            dynamicMovement->dynamicUpdate(v_character, seekSteer, deltaTime);
+            dynamicMovement->dynamicUpdate(v_character, dynamicMovement->getSteeringSeek(v_character, target), deltaTime);
             break;
         case ARRIVE:
-            new_object = dynamicMovement->getSteeringArrive(v_character, target);
-            if(MemoryManagement(new_object, arriveSteer))
-                arriveSteer = new_object;
-            dynamicMovement->dynamicUpdate(v_character, arriveSteer, deltaTime);
+            dynamicMovement->dynamicUpdate(v_character, dynamicMovement->getSteeringArrive(v_character, target), deltaTime);
+            break;
+        case FOLLOW_PATH:
+            dynamicMovement->dynamicUpdate(v_character, dynamicMovement->getSteeringFollowPath(v_character, _path), deltaTime);
             break;
         case NONE:
             std::cout << "Character: " << v_character->getCharacterID() << " is set to behavior NONE. Fix it." << std::endl;
             break;
     }
-    delete dynamicMovement;
 }
 
-bool MemoryManagement(SteeringOutput* newOutput, SteeringOutput* oldOutput)
+void createCharacterMovement(Character* v_character, PathAlgorithm* path, double deltaTime)
 {
-    if(!oldOutput || !newOutput || newOutput == oldOutput)
-        return false;
-    delete oldOutput;
-    return true;
-}
-
-void checkForZeroes(double check, std::ofstream& outfile)
-{
-    if(check == 0.0)
-        outfile << std::setprecision(0);
-    else if(std::fmod(check, 1.0) == 0.0)
-        outfile << std::setprecision(0);
-    else if(std::fmod(check, 0.5) == 0.0)
-        outfile << std::setprecision(1);
-    else if(check < 0.0)
-        outfile <<std::setprecision(14);
-    else
-        outfile <<std::setprecision(14);
-}
-
-void printCharacter(Character* characters, std::ofstream &outfile, double deltaTime)
-{
-    outfile << std::fixed << std::left;
-
-    // Current Delta Time
-    if(std::fmod(deltaTime, 1.0) != 0.0)
-        outfile  << std::setprecision(1);
-    else
-        outfile << std::setprecision(0);
-    outfile << deltaTime;
-            
-    outfile << std::setprecision(15);
-    outfile << "," << characters->getCharacterID();
-            
-    checkForZeroes(characters->getPosition()->x, outfile);
-    outfile << "," << characters->getPosition()->x;
-
-    checkForZeroes(characters->getPosition()->z, outfile);
-    outfile << "," << characters->getPosition()->z;
-    
-    checkForZeroes(characters->getVelocity()->x, outfile);
-    outfile << "," << characters->getVelocity()->x;
-
-    checkForZeroes(characters->getVelocity()->z, outfile);
-    outfile << "," << characters->getVelocity()->z;
-
-    checkForZeroes(characters->getLinear()->x, outfile);
-    outfile << "," << characters->getLinear()->x;
-            
-    checkForZeroes(characters->getLinear()->z, outfile);
-    outfile << "," << characters->getLinear()->z;
-            
-    checkForZeroes(characters->getOrientation(), outfile);
-    outfile << "," << characters->getOrientation();
-
-    checkForZeroes(characters->getSteerBehavior(), outfile);
-    outfile << "," << characters->getSteerBehavior();
-
-    if (!characters->getCollision())
-        outfile << "," << "FALSE";
-    else
-        outfile << "," << "TRUE";
-    outfile << std::endl;
 }
 
 Character* createNewCharacter(ETestChar tChar)
