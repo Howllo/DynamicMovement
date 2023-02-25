@@ -1,5 +1,5 @@
 /****************************************
-*
+ *
  * Author: Tony A. Hardiman Jr.
  * Assignment: Programming Assignment 1
  * Declaration: This program is entirely my own work.
@@ -13,6 +13,7 @@
 #include <vector>
 #include <iomanip>
 #include "SteeringOutput.h"
+#include "PathAlgorithm.h"
 
 enum ETestChar
 {
@@ -37,6 +38,7 @@ int main(int argc, char* argv[])
     const double stopTime = 50.0;
     const double deltaTime = 0.50;
     double currentDeltaTime = 0.0;
+    auto* path = new PathAlgorithm();
     
     // Create File
     std::ofstream outfile;
@@ -49,12 +51,20 @@ int main(int argc, char* argv[])
 
     // Test Characters
     Character* followPath = createNewCharacter(ETestPathFollowing);
+
+    // Path
+    path->AddPath(0, 90);
+    path->AddPath(-20, 65);
+    path->AddPath(20, 40);
+    path->AddPath(-40, 15);
+    path->AddPath(40, -10);
+    path->AddPath(-60, -35);
+    path->AddPath(60, -60);
+    path->AddPath(0, -85);
     
     // Main Loop
     while(currentDeltaTime <= stopTime)
     {
-
-
         // Update Delta Time
         currentDeltaTime += deltaTime;
     }

@@ -1,9 +1,16 @@
-﻿#pragma once
+﻿/****************************************
+ *
+ * Author: Tony A. Hardiman Jr.
+ * Assignment: Programming Assignment 1
+ * Declaration: This program is entirely my own work.
+ *
+ ***************************************/
+
+#pragma once
 
 class DynamicMovement
 {
     double stopVecloity = 0.02;
- 
 public:
     void dynamicUpdate(class Character* character, class SteeringOutput* steering, double deltaTime);
  
@@ -44,5 +51,5 @@ public:
      * \param path Takes in a path object to move the character.
      * \return Returns a steering output object.
      */
-    SteeringOutput* getSteeringFollowPath(Character* character, class PathAndMath* path);
+    SteeringOutput* getSteeringFollowPath(Character* character, class PathAlgorithm* path);
 };

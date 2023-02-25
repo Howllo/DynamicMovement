@@ -1,5 +1,5 @@
 ﻿/****************************************
-*
+ *
  * Author: Tony A. Hardiman Jr.
  * Assignment: Programming Assignment 1
  * Declaration: This program is entirely my own work.
@@ -7,8 +7,9 @@
  ***************************************/
 
 #include "DynamicMovement.h"
-#include "Character.h"
 #include "SteeringOutput.h"
+#include "PathAlgorithm.h"
+#include "Character.h"
 #include <cmath>
 #include <iostream>
 
@@ -113,7 +114,11 @@ SteeringOutput* DynamicMovement::getSteeringArrive(Character* character, Charact
     return result;
 }
 
-SteeringOutput* DynamicMovement::getSteeringFollowPath(Character* character, PathAndMath* path)
+SteeringOutput* DynamicMovement::getSteeringFollowPath(Character* character, PathAlgorithm* path)
 {
-    
+    VectorMath* currentParam = path->getParam(character);
+    VectorMath* targetParam = VectorMath::min(currentParam, character->getPathOffset());
+    Character* target = new Character();
+    target->setPosition(PathAlgorithm::pathGetPosition(path, targetParam));
+    return getSteeringSeek(character, target);
 }

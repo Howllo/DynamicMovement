@@ -1,5 +1,5 @@
 ﻿/****************************************
-*
+ *
  * Author: Tony A. Hardiman Jr.
  * Assignment: Programming Assignment 1
  * Declaration: This program is entirely my own work.
@@ -9,7 +9,8 @@
 #include "VectorMath.h"
 #include <cmath>
 #include <iostream>
-#include "PathAndMath.h"
+#include "PathAlgorithm.h"
+#include <cfloat>
 
 VectorMath::VectorMath()
 {
@@ -82,16 +83,74 @@ VectorMath* VectorMath::SubtractVectors(const VectorMath* v, const VectorMath* n
     return temp;
 }
 
+VectorMath* VectorMath::SubtractVectors(const VectorMath* v, const VectorMath n)
+{
+    auto* temp = new VectorMath();
+    if(!v) return nullptr;
+    temp->x = v->x - n.x;
+    temp->z = v->z - n.z;
+    return temp;
+}
+
+VectorMath* VectorMath::SubtractVectors(const VectorMath& v, const VectorMath& n)
+{
+    auto* temp = new VectorMath();
+    temp->x = v.x - n.x;
+    temp->z = v.z - n.z;
+    return temp;
+}
+
 void VectorMath::MultiplyDouble(double incoming)
 {
     x *= incoming;
     z *= incoming;
 }
 
+void VectorMath::MultiplyVector(VectorMath* v)
+{
+    x *= v->x;
+    z *= v->z;
+}
+
 void VectorMath::DivideDouble(double incoming)
 {
     x /= incoming;
     z /= incoming;
+}
+
+VectorMath* VectorMath::DivideVectors(VectorMath* v, VectorMath* n, bool deleteObjects)
+{
+    VectorMath* T = new VectorMath();
+    T->x = v->x / n->x;
+    T->z = v->z / n->z;
+    if(deleteObjects)
+    {
+        delete v;
+        delete n;
+    }
+    return T;
+}
+
+VectorMath* VectorMath::min(VectorMath* param, double charOffset)
+{
+    VectorMath* temp = new VectorMath();
+    double x_test = param->x + charOffset;
+    double z_test = param->z + charOffset;
+    double new_x =  fmin(1, x_test);
+    double new_z = fmin(1, z_test);
+    temp->x = new_x;
+    temp->z = new_z;
+    return temp;
+}
+
+int VectorMath::which(VectorMath* param, std::vector<VectorMath*> pathParam)
+{
+    for(int i = 0; i < pathParam.size(); i++)
+    {
+        if(param->x == pathParam[i]->x && param->z == pathParam[i]->z)
+            return i;
+    }
+    return 0;
 }
 
 double VectorMath::vectorDot(VectorMath* p1, VectorMath* p2, bool deleteObjects)
@@ -103,6 +162,11 @@ double VectorMath::vectorDot(VectorMath* p1, VectorMath* p2, bool deleteObjects)
         delete p2;
     }
     return T;
+}
+
+double VectorMath::distancePointPoint(const VectorMath* A, const VectorMath* B)
+{
+    return sqrt( pow((B->x - A->x), 2) + pow((B->z - A->z), 2) );
 }
 
 VectorMath* VectorMath::Clone()

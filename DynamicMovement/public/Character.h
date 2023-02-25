@@ -1,5 +1,5 @@
 ﻿/****************************************
-*
+ *
  * Author: Tony A. Hardiman Jr.
  * Assignment: Programming Assignment 1
  * Declaration: This program is entirely my own work.
@@ -41,7 +41,9 @@ class Character
     bool hasCollided;
     
 public:
-
+    // Used for Path Following function.
+    Character();
+    
     // Programming Assignment 1 - Constructor
     Character(int id, CharacterBehavior behavior, VectorMath* iposition, VectorMath* ivelocity, VectorMath* ilinear,
         double iorientation, double irotation, double iangular, double maxvelocity, double maxacceleration,
@@ -67,6 +69,7 @@ public:
     double getSlowingRadius() const;
     double getMaxVelocity() const;
     double getTimeToTarget() const;
+    double getPathOffset() const;
     bool getCollision() const;
 
     // Setters

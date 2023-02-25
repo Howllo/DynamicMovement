@@ -1,4 +1,12 @@
-﻿#pragma once
+﻿/****************************************
+ *
+ * Author: Tony A. Hardiman Jr.
+ * Assignment: Programming Assignment 1
+ * Declaration: This program is entirely my own work.
+ *
+ ***************************************/
+
+#pragma once
 #include "VectorMath.h"
 
 class SteeringOutput
