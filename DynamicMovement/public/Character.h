@@ -7,8 +7,9 @@
  ***************************************/
 
 #pragma once
-#include "VectorMath.h"
+#include "Vector2.h"
 #include "Character.h"
+#include "SteeringOutput.h"
 
 enum CharacterBehavior
 {
@@ -24,9 +25,9 @@ class Character
 {
     int ID;
     CharacterBehavior behavior;
-    VectorMath* iPosition;
-    VectorMath* iVelocity;
-    VectorMath* iLinear;
+    Vector2* iPosition;
+    Vector2* iVelocity;
+    Vector2* iLinear;
     double iOrientation;
     double iRotation;
     double iAngular;
@@ -45,12 +46,12 @@ public:
     Character();
     
     // Programming Assignment 1 - Constructor
-    Character(int id, CharacterBehavior behavior, VectorMath* iposition, VectorMath* ivelocity, VectorMath* ilinear,
+    Character(int id, CharacterBehavior behavior, Vector2* iposition, Vector2* ivelocity, Vector2* ilinear,
         double iorientation, double irotation, double iangular, double maxvelocity, double maxacceleration,
         CharacterBehavior target, float arrivalradius, double slowingradius, double timetotarget, bool collision);
 
     // Programming Assignment 2 - Constructor
-    Character(int id, CharacterBehavior behavior, VectorMath* iposition, VectorMath* ivelocity, VectorMath* ilinear,
+    Character(int id, CharacterBehavior behavior, Vector2* iposition, Vector2* ivelocity, Vector2* ilinear,
               double iorientation, double iangular, double maxvelocity, double maxacceleration, double pathToFollow,
               double pathOffset, bool collision);
     ~Character();
@@ -58,9 +59,9 @@ public:
     // Just bunch of Getters
     int getCharacterID() const;
     CharacterBehavior getSteerBehavior();
-    VectorMath* getPosition() const;
-    VectorMath* getVelocity() const;
-    VectorMath* getLinear() const;
+    Vector2* getPosition() const;
+    Vector2* getVelocity() const;
+    Vector2* getLinear() const;
     double getOrientation() const;
     double getRotation() const;
     double getAngular() const;
@@ -73,10 +74,10 @@ public:
     bool getCollision() const;
 
     // Setters
-    void setPosition(VectorMath* newPosition);
-    void setLinear(VectorMath* newLinear);
+    void setPosition(const Vector2 &newPosition);
+    void setLinear(const Vector2 &newLinear);
     void setOrientation(double newOrientation);
     void setRotation(double newRotation);
     void setAngular(double newAngular);
-    void setVelocity(VectorMath* newVelocity);
+    void setVelocity(const Vector2 &newVelocity);
 };

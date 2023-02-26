@@ -64,8 +64,13 @@ int main(int argc, char* argv[])
     {
         if(currentDeltaTime == 0.0)
         {
-            //PrintClass::printCharacter()
+            PrintClass::printCharacter(followPath, outfile, deltaTime);
+            currentDeltaTime += deltaTime;
+            continue;
         }
+
+        createCharacterMovement(followPath, nullptr, path, dynamicMovement, deltaTime);
+        PrintClass::printCharacter(followPath, outfile, currentDeltaTime);
         
         // Update Delta Time
         currentDeltaTime += deltaTime;
@@ -105,38 +110,33 @@ void createCharacterMovement(Character* v_character, Character* target, PathAlgo
     }
 }
 
-void createCharacterMovement(Character* v_character, PathAlgorithm* path, double deltaTime)
-{
-}
-
 Character* createNewCharacter(ETestChar tChar)
 {
     switch(tChar)
     {
         case ETestContinue:
-            // Continue Character
-             return new Character(2601, CONTINUE, new VectorMath(0.0, 0.0),
-                new VectorMath(0.0, 0.0), new VectorMath(0.0, 0.0), 0.0, 0.0,
+             return new Character(2601, CONTINUE, new Vector2(0.0, 0.0),
+                new Vector2(0.0, 0.0), new Vector2(0.0, 0.0), 0.0, 0.0,
                 0.0, 0.0, 0.0, NONE, 0.0, 0.0,
                 0.0, false);
         case ETestFlee:
-            return new Character(2602, FLEE, new VectorMath(-30.0, -50.0),
-                new VectorMath(2.0, 7.0), new VectorMath(0.0, 0.0), 0.785398163397448,
+            return new Character(2602, FLEE, new Vector2(-30.0, -50.0),
+                new Vector2(2.0, 7.0), new Vector2(0.0, 0.0), 0.785398163397448,
                 0.0, 0.0, 8.0, 1.5, CONTINUE, 0.0, 0.0,
                 0.0, false);
         case ETestSeek:
-            return new Character(2603, SEEK, new VectorMath(-50.0, 40.0),
-                new VectorMath(0.0, 8.0), new VectorMath(0.0, 0.0), 4.71238898038469,
+            return new Character(2603, SEEK, new Vector2(-50.0, 40.0),
+                new Vector2(0.0, 8.0), new Vector2(0.0, 0.0), 4.71238898038469,
                 0.0, 0.0, 8.0, 2.0, CONTINUE, 0.0, 0.0,
                 0.0, false);
         case ETestArrive:
-            return new Character(2604, ARRIVE, new VectorMath(50, 75),
-                new VectorMath(-9.0, 4.0), new VectorMath(0.0, 0.0), 3.14159265358979,
+            return new Character(2604, ARRIVE, new Vector2(50, 75),
+                new Vector2(-9.0, 4.0), new Vector2(0.0, 0.0), 3.14159265358979,
                 0.0, 0.0, 10.0, 2.0, CONTINUE, 4.0, 32,
                 1.0, false);
         case ETestPathFollowing:
-            return new Character(2701, FOLLOW_PATH, new VectorMath(20.0, 95.0),
-                new VectorMath(0.0, 0.0), new VectorMath(0.0, 0.0), 0.0, 0.0,
+            return new Character(2701, FOLLOW_PATH, new Vector2(20.0, 95.0),
+                new Vector2(0.0, 0.0), new Vector2(0.0, 0.0), 0.0, 0.0,
                 4, 2.0, 1.0, 0.04, false);
     }
     return nullptr;

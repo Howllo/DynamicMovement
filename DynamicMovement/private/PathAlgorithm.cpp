@@ -7,7 +7,7 @@
  ***************************************/
 
 #include "PathAlgorithm.h"
-#include "VectorMath.h"
+#include "Vector2.h"
 #include <complex>
 #include "Character.h"
 
@@ -17,7 +17,7 @@ PathAlgorithm::PathAlgorithm()
 
 PathAlgorithm::PathAlgorithm(double x_in, double z_in)
 {
-    points.push_back(new VectorMath(x_in, z_in));
+    points.push_back(new Vector2(x_in, z_in));
 }
 
 PathAlgorithm::~PathAlgorithm()
@@ -37,63 +37,69 @@ PathAlgorithm::~PathAlgorithm()
 
 void PathAlgorithm::AddPath(double x_in, double z_in)
 {
-    points.push_back(new VectorMath(x_in, z_in));
+    points.push_back(new Vector2(x_in, z_in));
 }
 
-VectorMath* PathAlgorithm::closestPointSegment(VectorMath* Q, VectorMath* A, VectorMath* B)
+path_assemble* PathAlgorithm::pathAssemble(int pathID, double x_in, double z_in)
 {
-    double T =
-        VectorMath::vectorDot(VectorMath::SubtractVectors(Q, A), VectorMath::SubtractVectors(B, A), true) /
-        VectorMath::vectorDot(VectorMath::SubtractVectors(B, A), VectorMath::SubtractVectors(B, A), true);
+    unsigned long long pathSegment = 0;
+    if(!points.empty())
+        pathSegment = points.size() - 1;
+    return new path_assemble();
+}
+
+Vector2* PathAlgorithm::closestPointSegment(Vector2* Q, Vector2* A, Vector2* B)
+{
+    double T = Vector2::vectorDot(*Q - *B, (*B - *A)) / Vector2::vectorDot(*B - *A, *B - *A);
 
     if( T <= 0) { return A; }
     else if (T >= 1) { return B; }
     else
     {
-        VectorMath* temp = VectorMath::SubtractVectors(B, A);
-        temp->MultiplyDouble(T);
-        temp->AddVector(A);
+        Vector2* temp = new Vector2( (*B - *A) );
+        *temp *= T;
+        *temp += *A;
         temp->tempObject = true;
         return temp;
     }
 }
 
-VectorMath* PathAlgorithm::pathGetPosition(PathAlgorithm* path, VectorMath* param)
+Vector2* PathAlgorithm::pathGetPosition(PathAlgorithm* path, Vector2* param)
 {
-    std::vector<VectorMath*> holderVector = path->getPointsOnGraph();
-    int i = VectorMath::which(param, path->getPointsOnGraph());
-    VectorMath* A = new VectorMath(holderVector[i]->x, holderVector[i]->z);
-    VectorMath* B = new VectorMath(holderVector[i + 1]->x, holderVector[i + 1]->z);
-    VectorMath* T = VectorMath::DivideVectors( VectorMath::SubtractVectors(param, holderVector[i + 1]),
-        VectorMath::SubtractVectors(holderVector[i + 1], holderVector[i]), true );
-    VectorMath* P = VectorMath::SubtractVectors(B, A);
-    P->MultiplyVector(T);
-    P->AddVector(A);
+    std::vector<Vector2*> holderVector = path->getPointsOnGraph();
+    int i = Vector2::which(param, path->getPointsOnGraph());
+    Vector2* A = new Vector2(holderVector[i]->x, holderVector[i]->z);
+    Vector2* B = new Vector2(holderVector[i + 1]->x, holderVector[i + 1]->z);
+    Vector2* T = new Vector2(0.0, 0.0);
+    *T = (*param - *holderVector[i]) / (*holderVector[i + 1] - *holderVector[i]);
+    auto* P = new Vector2(0.0, 0.0);
+    *P *= *A + (*T * (*B - *A));
+    
     delete A;
     delete B;
     return P;
 }
 
-VectorMath* PathAlgorithm::getParam(Character* character)
+Vector2* PathAlgorithm::getParam(Character* character)
 {
     double closestDistance = INT_MAX;
     unsigned int closestSegment = INT_MAX;
-    VectorMath* closestPoint = new VectorMath();
+    Vector2* closestPoint = new Vector2(0.0, 0.0);
     
     for(unsigned int i = 0; i < points.size(); i++)
     {
-        VectorMath* pointOne = new VectorMath();
-        VectorMath* pointTwo = new VectorMath();
-        pointOne->setPoints(points[i]);
-        if((i + 1) <= points.size())
-            pointTwo->setPoints(points[i + 1]);
+        Vector2* pointOne = new Vector2(0.0, 0.0);
+        Vector2* pointTwo = new Vector2(0.0, 0.0);
+        pointOne->setPoint(points[i]);
+        if((i + 1) < points.size())
+            pointTwo->setPoint(points[i + 1]);
         
-        VectorMath* checkPoint = closestPointSegment(character->getPosition(), pointOne, pointTwo);
-        const double checkDistance = VectorMath::distancePointPoint(character->getPosition(), checkPoint);
+        Vector2* checkPoint = closestPointSegment(character->getPosition(), pointOne, pointTwo);
+        const double checkDistance = Vector2::distancePointPoint(character->getPosition(), checkPoint);
 
         if(checkDistance < closestDistance)
         {
-            closestPoint->setPoints(checkPoint);
+            closestPoint->setPoint(checkPoint);
             closestDistance = checkDistance;
             closestSegment = i;
         }
@@ -108,29 +114,23 @@ VectorMath* PathAlgorithm::getParam(Character* character)
     return calculatePathParam(closestSegment, closestPoint);
 }
 
-VectorMath* PathAlgorithm::calculatePathParam(unsigned closestSegment, const VectorMath* closestPoint)
+Vector2* PathAlgorithm::calculatePathParam(unsigned closestSegment, const Vector2* closestPoint)
 {
-    VectorMath A;
+    Vector2 A(0.0, 0.0);
     A.x = points[closestSegment]->x;
     A.z = points[closestSegment]->z;
-    const VectorMath* AParam = points[closestSegment];
+    const Vector2* AParam = points[closestSegment];
     
-    VectorMath B;
+    Vector2 B(0.0, 0.0);
     B.x = points[closestSegment + 1]->x;
     B.z = points[closestSegment + 1]->z;
-    const VectorMath* BParam = points[closestSegment + 1];
+    const Vector2* BParam = points[closestSegment + 1];
     
-    const VectorMath* C = closestPoint;
-    VectorMath* CParam = VectorMath::SubtractVectors(BParam, AParam);
-    
-    VectorMath* D = VectorMath::SubtractVectors(C, A);
-    VectorMath* E = VectorMath::SubtractVectors(B, A);
-    double T = D->vector_length() / E->vector_length();
-
-    CParam->MultiplyDouble(T);
-    CParam->AddVector(AParam);
-    
-    delete D;
-    delete E;
+    const Vector2* C = closestPoint;
+    Vector2* CParam = new Vector2(*BParam - *AParam);
+    Vector2 D(*C - A);
+    Vector2 E(B - A);
+    double T = D.vector_length() / E.vector_length();
+    *CParam = *AParam + (*BParam - *AParam) * T;
     return CParam;
 }

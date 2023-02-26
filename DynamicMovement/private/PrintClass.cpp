@@ -20,7 +20,7 @@ void PrintClass::checkForZeroes(double check, std::ofstream& outfile)
         outfile <<std::setprecision(14);
 }
 
-void PrintClass::printCharacter(Character* characters, std::ofstream &outfile, double deltaTime, CharacterBehavior behavior)
+void PrintClass::printCharacter(Character* characters, std::ofstream &outfile, double deltaTime)
 {
     outfile << std::fixed << std::left;
 

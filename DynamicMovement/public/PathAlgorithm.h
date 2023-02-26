@@ -9,20 +9,20 @@
 
 #include <vector>
 
-/*struct path_assemble
+struct path_assemble
 {
     int ID;
     double x;
     double z;
     double distance;
-    VectorMath* param;
+    class Vector2* param;
     int segment;
-};*/
+};
 
 class PathAlgorithm
 {
-    std::vector<class VectorMath*> points;
-    //std::vector<path_assemble*> normalizedPoints;
+    std::vector<Vector2*> points;
+    std::vector<path_assemble*> normalizedPoints;
 public:
     PathAlgorithm();
     PathAlgorithm(double x_in, double z_in);
@@ -35,6 +35,8 @@ public:
      */
     void AddPath(double x_in, double z_in);
 
+    path_assemble* pathAssemble(int pathID, double x_in, double z_in);
+    
     /**
      * \brief Used to find closest segment.
      * \param Q VectorMath Object as a query point.
@@ -42,7 +44,7 @@ public:
      * \param B Segment endpoint.
      * \return Returns closest segment to query point in 2D.
      */
-    VectorMath* closestPointSegment(VectorMath* Q, VectorMath* A, VectorMath* B);
+    Vector2* closestPointSegment(Vector2* Q, Vector2* A, Vector2* B);
 
     /**
      * \brief To get the positon of a path corresponding to given path parameter.
@@ -50,17 +52,17 @@ public:
      * \param param Vector of the path.
      * \return Returns vector math.
      */
-    static VectorMath* pathGetPosition(PathAlgorithm* path, VectorMath* param);
+    static Vector2* pathGetPosition(PathAlgorithm* path, Vector2* param);
     
     /**
      * \brief Used to get the closest path to the character.
      * \param character Takes a character to get the position from.
      * \return Returns a struct of the path position.
      */
-    VectorMath* getParam(class Character* character);
+    Vector2* getParam(class Character* character);
 
     // Getters
-    std::vector<VectorMath*> getPointsOnGraph();
+    std::vector<Vector2*> getPointsOnGraph();
 private:
     /**
      * \brief Used for getParam.
@@ -68,10 +70,10 @@ private:
      * \param closestPoint Takes in the closest point to the character.
      * \return Returns the closest point.
      */
-    VectorMath* calculatePathParam(unsigned int closestSegment, const VectorMath* closestPoint);
+    Vector2* calculatePathParam(unsigned int closestSegment, const Vector2* closestPoint);
 };
 
-inline std::vector<VectorMath*> PathAlgorithm::getPointsOnGraph()
+inline std::vector<Vector2*> PathAlgorithm::getPointsOnGraph()
 {
     return points;
 }

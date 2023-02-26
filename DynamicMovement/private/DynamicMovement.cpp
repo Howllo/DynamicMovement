@@ -34,78 +34,58 @@ DynamicMovement::~DynamicMovement()
 void DynamicMovement::dynamicUpdate(Character* character, SteeringOutput* steering, const double deltaTime)
 {
     // Character Position.
-    VectorMath* pVec = new VectorMath(character->getVelocity()->x, character->getVelocity()->z);
-    pVec->MultiplyDouble(deltaTime);
-    character->getPosition()->AddVector(pVec);
-    delete pVec;
+    character->setPosition( *character->getPosition() + (*character->getVelocity() * deltaTime) );
 
     // Character Orientation
     character->setOrientation( character->getOrientation() + (character->getRotation() * deltaTime) );
 
     // Character Velocity
-    pVec = new VectorMath(steering->GetLinear()->x, steering->GetLinear()->z);
-    pVec->MultiplyDouble(deltaTime);
-    character->getVelocity()->AddVector(pVec);
-    delete pVec;
+    character->setVelocity( *character->getVelocity() + (*steering->GetLinear() * deltaTime));
 
     // Character Rotation
-    character->setRotation(character->getRotation() + (steering->GetAngular() * deltaTime));
+    character->setRotation(steering->GetAngular() * deltaTime);
 
     // Character Linear / Angular
-    character->setLinear(steering->GetLinear()->Clone());
+    character->setLinear(*steering->GetLinear());
     character->setAngular(steering->GetAngular());
 
     // Check Jitter
-    if(character->getVelocity()->vector_length() < stopVecloity) { character->setVelocity(new VectorMath(0, 0)); }
+    if(character->getVelocity()->vector_length() < stopVecloity) { character->setVelocity(*new Vector2(0, 0)); }
 
     // Check Max Velocity
     if(character->getVelocity()->vector_length() > character->getMaxVelocity())
     {
-        character->setVelocity(character->getVelocity()->vector_normalize());
-        character->getVelocity()->MultiplyDouble(character->getMaxVelocity());
+        character->setVelocity(*character->getVelocity()->vector_normalize() * character->getMaxVelocity());
     }
 }
 
 SteeringOutput* DynamicMovement::getSteeringContinue(Character* character)
 {
-    return new SteeringOutput(new VectorMath(character->getLinear()->x, character->getLinear()->z), character->getAngular());
+    return new SteeringOutput(new Vector2(character->getLinear()->x, character->getLinear()->z), character->getAngular());
 }
 
 SteeringOutput* DynamicMovement::getSteeringSeek(Character* character, Character* target)
 {
-    auto* result = new SteeringOutput(new VectorMath(0.0, 0.0), 0.0);
-
-    // Create a new Vector object to store new information.
-    VectorMath* vector_math = new VectorMath();
-    vector_math->SubtractVector(target->getPosition(), character->getPosition());
-    result->SetLinear(vector_math->vector_normalize());
-    result->GetLinear()->MultiplyDouble(character->getMaxAcceleration());
-    
+    auto* result = new SteeringOutput(new Vector2(0.0, 0.0), 0.0);
+    result->SetLinear( *(*target->getPosition() - *character->getPosition()).vector_normalize()
+        * character->getMaxAcceleration() );
     result->SetAngular(0.0);
-    delete vector_math;
     return result;
 }
 
 SteeringOutput* DynamicMovement::getSteeringFlee(Character* character, Character* target)
 {
-    auto* result = new SteeringOutput(new VectorMath(0.0, 0.0), 0.0);
-
-    // Create a new Vector object to store new information.
-    auto* vector_math = new VectorMath();
-    vector_math->SubtractVector(character->getPosition(), target->getPosition());
-    result->SetLinear(vector_math->vector_normalize());
-    result->GetLinear()->MultiplyDouble(character->getMaxAcceleration());
-    
+    auto* result = new SteeringOutput(new Vector2(0.0, 0.0), 0.0);
+    result->SetLinear(  *((*character->getPosition() - *target->getPosition()).vector_normalize())
+        * character->getMaxAcceleration());
     result->SetAngular(0.0);
-    delete vector_math;
     return  result;
 }
 
 SteeringOutput* DynamicMovement::getSteeringArrive(Character* character, Character* target)
 {
-    auto* result = new SteeringOutput(new VectorMath(0.0, 0.0), 0.0);
-    auto* direction = new VectorMath();
-    direction->SubtractVector(target->getPosition(),character->getPosition());
+    auto* result = new SteeringOutput(new Vector2(0.0, 0.0), 0.0);
+    auto* direction = new Vector2( *target->getPosition() - *character->getPosition());
     const double distance = direction->vector_length();
     double arrivalSpeed = 0.0;
     
@@ -117,16 +97,13 @@ SteeringOutput* DynamicMovement::getSteeringArrive(Character* character, Charact
         arrivalSpeed = (character->getMaxVelocity() * distance) / character->getSlowingRadius();
 
     // Setting up arrival vector.
-    VectorMath* arrival_velocity = direction->vector_normalize();
-    arrival_velocity->MultiplyDouble(arrivalSpeed);
-    arrival_velocity->SubtractVector(character->getVelocity());
-    arrival_velocity->DivideDouble(character->getTimeToTarget());
-    result->SetLinear(arrival_velocity);
+    Vector2* arrival_velocity = new Vector2(*direction->vector_normalize() * arrivalSpeed);
+    result->SetLinear(*arrival_velocity - *character->getVelocity() / character->getTimeToTarget());
     
     if(result->GetLinear()->vector_length() > character->getMaxAcceleration())
     {
-        result->SetLinear(result->GetLinear()->vector_normalize());
-        result->GetLinear()->MultiplyDouble(character->getMaxAcceleration());
+        result->SetLinear(*result->GetLinear()->vector_normalize());
+        *result->GetLinear() *= character->getMaxAcceleration();
     }
     delete direction;
     return result;
@@ -134,14 +111,14 @@ SteeringOutput* DynamicMovement::getSteeringArrive(Character* character, Charact
 
 SteeringOutput* DynamicMovement::getSteeringFollowPath(Character* character, PathAlgorithm* path)
 {
-    VectorMath* currentParam = path->getParam(character);
-    VectorMath* targetParam = VectorMath::min(currentParam, character->getPathOffset());
+    Vector2* currentParam = path->getParam(character);
+    Vector2* targetParam = Vector2::min(currentParam, character->getPathOffset());
     Character* target = new Character();
     target->setPosition(PathAlgorithm::pathGetPosition(path, targetParam));
     return getSteeringSeek(character, target);
 }
 
-void DynamicMovement::MemoryManagement(SteeringOutput* newOutput, SteeringOutput* oldOutput)
+void DynamicMovement::MemoryManagement(const SteeringOutput* newOutput, const SteeringOutput* oldOutput)
 {
     if(!oldOutput || !newOutput || newOutput == oldOutput)
         return;

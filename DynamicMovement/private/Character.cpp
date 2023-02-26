@@ -29,7 +29,7 @@ Character::Character()
     pathOffset = 0.0;
 }
 
-Character::Character(int id, CharacterBehavior behavior, VectorMath* iposition, VectorMath* ivelocity, VectorMath* ilinear,
+Character::Character(int id, CharacterBehavior behavior, Vector2* iposition, Vector2* ivelocity, Vector2* ilinear,
                      double iorientation, double irotation, double iangular, double maxvelocity, double maxacceleration,
                      CharacterBehavior target, float arrivalradius, double slowingradius, double timetotarget, bool collision)
 {
@@ -54,7 +54,7 @@ Character::Character(int id, CharacterBehavior behavior, VectorMath* iposition, 
     this->pathOffset = 0.0;
 }
 
-Character::Character(int id, CharacterBehavior behavior, VectorMath* iposition, VectorMath* ivelocity, VectorMath* ilinear,
+Character::Character(int id, CharacterBehavior behavior, Vector2* iposition, Vector2* ivelocity, Vector2* ilinear,
     double iorientation, double iangular, double maxvelocity, double maxacceleration, double pathToFollow, double pathOffset,
     bool collision)
 {
@@ -96,17 +96,17 @@ CharacterBehavior Character::getSteerBehavior()
     return behavior;
 }
 
-VectorMath* Character::getPosition() const
+Vector2* Character::getPosition() const
 {
     return iPosition;
 }
 
-VectorMath* Character::getVelocity() const
+Vector2* Character::getVelocity() const
 {
     return iVelocity;
 }
 
-VectorMath* Character::getLinear() const
+Vector2* Character::getLinear() const
 {
     return iLinear;
 }
@@ -161,20 +161,18 @@ bool Character::getCollision() const
     return hasCollided;
 }
 
-void Character::setPosition(VectorMath* newPosition)
+void Character::setPosition(const Vector2 &newPosition)
 {
-    if(!newPosition) return;
-    if(iPosition != newPosition)
-        delete iPosition;
-    iPosition = newPosition;
+    Vector2* temp = new Vector2(newPosition.x, newPosition.z);
+    delete iPosition;
+    iPosition = temp;
 }
 
-void Character::setLinear(VectorMath* newLinear)
+void Character::setLinear(const Vector2 &newLinear)
 {
-    if(!newLinear) return;
-    if(iLinear != newLinear)
-        delete iLinear;
-    iLinear = newLinear;
+    Vector2* temp = new Vector2(newLinear.x, newLinear.z);
+    delete iLinear;
+    iLinear = temp;
 }
 
 void Character::setOrientation(double newOrientation)
@@ -192,10 +190,9 @@ void Character::setAngular(double newAngular)
     iAngular = newAngular;
 }
 
-void Character::setVelocity(VectorMath* newVelocity)
+void Character::setVelocity(const Vector2& newVelocity)
 {
-    if(iVelocity == newVelocity)
-        return;
+    Vector2* temp = new Vector2(newVelocity.x, newVelocity.z);
     delete iVelocity;
-    iVelocity = newVelocity;
+    iVelocity = temp;
 }

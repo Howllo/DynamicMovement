@@ -74,7 +74,7 @@ private:
      * \param newOutput Takes in a new steer object to be compared to old steer object.
      * \param oldOutput Uses the old steer object be compared.
      */
-    void MemoryManagement(SteeringOutput* newOutput, SteeringOutput* oldOutput);
+    static void MemoryManagement(const SteeringOutput* newOutput, const SteeringOutput* oldOutput);
 
     /**
      * \brief Used to check the behavior of the character object to reduce the size of function.
