@@ -10,7 +10,6 @@
 #include "../public/SteeringOutput.h"
 #include "../public/PathAlgorithm.h"
 #include "../public/Character.h"
-#include <cmath>
 #include <iostream>
 
 DynamicMovement::DynamicMovement()
@@ -33,6 +32,9 @@ DynamicMovement::~DynamicMovement()
 
 void DynamicMovement::dynamicUpdate(Character* character, SteeringOutput* steering, const double deltaTime)
 {
+    // Memory Management.
+    checkCharacterBehavior(character, steering);
+    
     // Character Position.
     character->setPosition( *character->getPosition() + (*character->getVelocity() * deltaTime) );
 
@@ -43,7 +45,7 @@ void DynamicMovement::dynamicUpdate(Character* character, SteeringOutput* steeri
     character->setVelocity( *character->getVelocity() + (*steering->GetLinear() * deltaTime));
 
     // Character Rotation
-    character->setRotation(steering->GetAngular() * deltaTime);
+    character->setRotation(character->getRotation() + (steering->GetAngular() * deltaTime));
 
     // Character Linear / Angular
     character->setLinear(*steering->GetLinear());
@@ -67,8 +69,9 @@ SteeringOutput* DynamicMovement::getSteeringContinue(Character* character)
 SteeringOutput* DynamicMovement::getSteeringSeek(Character* character, Character* target)
 {
     auto* result = new SteeringOutput(new Vector2(0.0, 0.0), 0.0);
-    result->SetLinear( *(*target->getPosition() - *character->getPosition()).vector_normalize()
-        * character->getMaxAcceleration() );
+    result->SetLinear(*target->getPosition() - *character->getPosition());
+    result->SetLinear(*result->GetLinear()->vector_normalize());
+    result->SetLinear(*result->GetLinear() * character->getMaxAcceleration());
     result->SetAngular(0.0);
     return result;
 }
@@ -76,8 +79,9 @@ SteeringOutput* DynamicMovement::getSteeringSeek(Character* character, Character
 SteeringOutput* DynamicMovement::getSteeringFlee(Character* character, Character* target)
 {
     auto* result = new SteeringOutput(new Vector2(0.0, 0.0), 0.0);
-    result->SetLinear(  *((*character->getPosition() - *target->getPosition()).vector_normalize())
-        * character->getMaxAcceleration());
+    result->SetLinear(*character->getPosition() - *target->getPosition());
+    result->SetLinear(*result->GetLinear()->vector_normalize());
+    result->SetLinear(*result->GetLinear() * character->getMaxAcceleration());
     result->SetAngular(0.0);
     return  result;
 }
@@ -111,10 +115,9 @@ SteeringOutput* DynamicMovement::getSteeringArrive(Character* character, Charact
 
 SteeringOutput* DynamicMovement::getSteeringFollowPath(Character* character, PathAlgorithm* path)
 {
-    Vector2* currentParam = path->getParam(character);
-    Vector2* targetParam = Vector2::min(currentParam, character->getPathOffset());
-    Character* target = new Character();
-    target->setPosition(PathAlgorithm::pathGetPosition(path, targetParam));
+    currentParam = path->getParam(character->getPosition());
+    double targetParam = currentParam + character->getPathOffset();
+    auto* target = new Character(PathAlgorithm::pathGetPosition(path, targetParam));
     return getSteeringSeek(character, target);
 }
 

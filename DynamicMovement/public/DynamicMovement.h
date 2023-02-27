@@ -17,6 +17,7 @@ class DynamicMovement
     SteeringOutput* seekSteer;
     SteeringOutput* arriveSteer;
     SteeringOutput* followSteer;
+    double currentParam;
 public:
     DynamicMovement();
     ~DynamicMovement();

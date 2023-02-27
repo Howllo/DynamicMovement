@@ -8,11 +8,11 @@
 
 #include "Character.h"
 
-Character::Character()
+Character::Character(Vector2* iposition)
 {
     ID = 0;
     behavior = NONE;
-    iPosition = nullptr;
+    iPosition = iposition;
     iVelocity = nullptr;
     iLinear = nullptr;
     iOrientation = 0.0;
@@ -24,8 +24,8 @@ Character::Character()
     arrivalRadius = 0.0;
     slowingRadius = 0.0;
     timeToTarget = 0.0;
-    hasCollided = 0.0;
-    pathToFollow = 0.0;
+    hasCollided = false;
+    pathToFollow = 0;
     pathOffset = 0.0;
 }
 
@@ -50,12 +50,12 @@ Character::Character(int id, CharacterBehavior behavior, Vector2* iposition, Vec
     hasCollided = collision;
 
     // Unused
-    this->pathToFollow = 0.0;
+    this->pathToFollow = 0;
     this->pathOffset = 0.0;
 }
 
 Character::Character(int id, CharacterBehavior behavior, Vector2* iposition, Vector2* ivelocity, Vector2* ilinear,
-    double iorientation, double iangular, double maxvelocity, double maxacceleration, double pathToFollow, double pathOffset,
+    double iorientation, double iangular, double maxvelocity, double maxacceleration, int pathToFollow, double pathOffset,
     bool collision)
 {
     ID = id;

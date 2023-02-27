@@ -37,13 +37,13 @@ class Character
     float arrivalRadius;
     double slowingRadius;
     double timeToTarget;
-    double pathToFollow;
+    int pathToFollow;
     double pathOffset;
     bool hasCollided;
     
 public:
     // Used for Path Following function.
-    Character();
+    Character(Vector2* iposition);
     
     // Programming Assignment 1 - Constructor
     Character(int id, CharacterBehavior behavior, Vector2* iposition, Vector2* ivelocity, Vector2* ilinear,
@@ -52,7 +52,7 @@ public:
 
     // Programming Assignment 2 - Constructor
     Character(int id, CharacterBehavior behavior, Vector2* iposition, Vector2* ivelocity, Vector2* ilinear,
-              double iorientation, double iangular, double maxvelocity, double maxacceleration, double pathToFollow,
+              double iorientation, double iangular, double maxvelocity, double maxacceleration, int pathToFollow,
               double pathOffset, bool collision);
     ~Character();
 

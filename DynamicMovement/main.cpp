@@ -31,9 +31,9 @@ Character* createNewCharacter(ETestChar tChar);
 int main(int argc, char* argv[])
 {
     // Simulation
-    const double stopTime = 125.0;
-    const double deltaTime = 0.50;
-    double currentDeltaTime = 0.0;
+    constexpr double deltaTime = 0.50;
+    constexpr double simulatedSeconds = 0.5; //TODO: set it to 125 seconds. 
+    double currentSimulatedSeconds = 0.0;
     auto* path = new PathAlgorithm();
     auto* dynamicMovement = new DynamicMovement();
     
@@ -51,29 +51,29 @@ int main(int argc, char* argv[])
 
     // Path
     path->AddPath(0, 90);
-    path->AddPath(-20, 65);
+    path->AddPath(-20.0, 65);
     path->AddPath(20, 40);
     path->AddPath(-40, 15);
     path->AddPath(40, -10);
     path->AddPath(-60, -35);
     path->AddPath(60, -60);
     path->AddPath(0, -85);
+    path->setAssemblePoint(path->pathAssemble(1));
     
     // Main Loop
-    while(currentDeltaTime <= stopTime)
+    while(currentSimulatedSeconds <= simulatedSeconds)
     {
-        if(currentDeltaTime == 0.0)
+        if(currentSimulatedSeconds == 0.0)
         {
-            PrintClass::printCharacter(followPath, outfile, deltaTime);
-            currentDeltaTime += deltaTime;
+            PrintClass::printCharacter(followPath, outfile, currentSimulatedSeconds);
+            currentSimulatedSeconds += deltaTime;
             continue;
         }
-
         createCharacterMovement(followPath, nullptr, path, dynamicMovement, deltaTime);
-        PrintClass::printCharacter(followPath, outfile, currentDeltaTime);
+        PrintClass::printCharacter(followPath, outfile, currentSimulatedSeconds);
         
         // Update Delta Time
-        currentDeltaTime += deltaTime;
+        currentSimulatedSeconds += deltaTime;
     }
     std::cout << "Finished printing!" << std::endl;
     outfile.close();
@@ -137,7 +137,7 @@ Character* createNewCharacter(ETestChar tChar)
         case ETestPathFollowing:
             return new Character(2701, FOLLOW_PATH, new Vector2(20.0, 95.0),
                 new Vector2(0.0, 0.0), new Vector2(0.0, 0.0), 0.0, 0.0,
-                4, 2.0, 1.0, 0.04, false);
+                4, 2.0, 1, 0.04, false);
     }
     return nullptr;
 }

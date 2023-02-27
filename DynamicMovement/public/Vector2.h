@@ -7,23 +7,19 @@
  ***************************************/
 
 #pragma once
+#include <ostream>
 #include <vector>
 
 class Vector2
 {
     friend class PathAlgorithm;
     friend class DynamicMovement;
-    
    public:
     // X axis of the vector.
     double x;
     
     // Z axis of the vector.
     double z;
-
-    // Keep track of temp object. Used for closestPointSegment tracking.
-    // This is to keep from accidentally deleting in use object.
-    bool tempObject;
 
     Vector2(Vector2* in);
     
@@ -47,32 +43,25 @@ class Vector2
     double vector_length();
 
     /**
+     * \brief Used to get the length using parthenon theorem.
+     * \param v Takes in a vector address to computer the length.
+     * \return Returns a double of the parthenon theorem.
+     */
+    static double vector_length(const Vector2 &v);
+    
+    /**
      * \brief Use to normalize the vector.
      * \return Returns a instantiated vector.
      */
     Vector2* vector_normalize();
 
     /**
-     * \brief Used to multiple a vector to current vector.
-     * \param v Takes in a vector to be multiplied.
-     */
-    void MultiplyVector(Vector2* v);
-    
-    /**
-     * \brief Used to get min of both x and z.
-     * \param param Takes in a path vector.
-     * \param charOffset Takes in character offset.
-     * \return Return a double.
-     */
-    static Vector2* min(Vector2* param, double charOffset);
-
-    /**
      * \brief Used to get the same X/Z coordinate of a object in pathParam.
-     * \param param Takes in a path VectorMath object.
-     * \param pathParam Takes in a the entire path to compare.
+     * \param param Takes in a the entire path to compare.
+     * \param pathParam Takes in the path param vector to be processed.
      * \return Returns the index of the object that is the same as param.
      */
-    static int which(Vector2* param, std::vector<Vector2*> pathParam);
+    static unsigned int which(double param, const std::vector<double>& pathParam);
     
     /**
      * \brief Used to get the distance between two point.
@@ -95,6 +84,7 @@ class Vector2
     Vector2 operator-(const Vector2 &right) const;
     Vector2 operator-(const double &right) const;
     Vector2 operator+(const Vector2 &right) const;
+    Vector2 operator+(const double &right) const;
     Vector2 operator*(const Vector2 &right) const;
     Vector2 operator*(const double &right) const;
     Vector2 operator/(const Vector2 &right) const;
@@ -107,4 +97,7 @@ class Vector2
     Vector2& operator/=(const Vector2 &right);
     Vector2& operator/=(const double &right);
     bool operator==(const Vector2 &right) const;
+
+    // For Debugging only.
+    void printVector();
 };
