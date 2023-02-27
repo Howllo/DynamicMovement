@@ -31,7 +31,7 @@ Character::Character(Vector2* iposition)
 
 Character::Character(int id, CharacterBehavior behavior, Vector2* iposition, Vector2* ivelocity, Vector2* ilinear,
                      double iorientation, double irotation, double iangular, double maxvelocity, double maxacceleration,
-                     CharacterBehavior target, float arrivalradius, double slowingradius, double timetotarget, bool collision)
+                     CharacterBehavior target, double arrivalradius, double slowingradius, double timetotarget, bool collision)
 {
     ID = id;
     this->behavior = behavior;

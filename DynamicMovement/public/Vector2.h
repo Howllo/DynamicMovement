@@ -98,6 +98,12 @@ class Vector2
     Vector2& operator/=(const double &right);
     bool operator==(const Vector2 &right) const;
 
+    /**
+     * \brief Used to clone Vector2 objects.
+     * \return Returns a NEW cloned object.
+     */
+    Vector2* Clone();
+    
     // For Debugging only.
     void printVector();
 };

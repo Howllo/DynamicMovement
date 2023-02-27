@@ -70,7 +70,7 @@ double Vector2::distancePointPoint(const Vector2* A, const Vector2* B)  // Worki
 
 Vector2 Vector2::operator-(const Vector2& right) const
 {
-    Vector2 T(this->x - right.x, this->x - right.z);
+    Vector2 T(this->x - right.x, this->z - right.z);
     return T;
 }
 
@@ -82,7 +82,7 @@ Vector2 Vector2::operator-(const double& right) const
 
 Vector2 Vector2::operator+(const Vector2& right) const
 {
-    Vector2 T(this->x + right.x, this->x + right.z);
+    Vector2 T(this->x + right.x, this->z + right.z);
     return T;
 }
 
@@ -94,32 +94,32 @@ Vector2 Vector2::operator+(const double& right) const
 
 Vector2 Vector2::operator*(const Vector2& right) const
 {
-    Vector2 T(this->x * right.x, this->x * right.z);
+    Vector2 T(this->x * right.x, this->z * right.z);
     return T;
 }
 
 Vector2 Vector2::operator*(const double& right) const
 {
-    Vector2 T(this->x * right, this->x * right);
+    Vector2 T(this->x * right, this->z * right);
     return T;
 }
 
 Vector2 Vector2::operator/(const Vector2& right) const
 {
-    Vector2 T(this->x / right.x, this->x / right.z);
+    Vector2 T(this->x / right.x, this->z / right.z);
     return T;
 }
 
 Vector2 Vector2::operator/(const double& right) const
 {
-    Vector2 T(this->x / right, this->x / right);
+    Vector2 T(this->x / right, this->z / right);
     return T;
 }
 
 Vector2& Vector2::operator=(const Vector2& right)
 {
     this->x = right.x;
-    this->z = right.x;
+    this->z = right.z;
     return *this;
 }
 
@@ -170,6 +170,11 @@ bool Vector2::operator==(const Vector2& right) const
     if(fabs(this->x - right.x)  < DBL_EPSILON && fabs(this->z - right.z) < DBL_EPSILON)
         return true;
     return false;
+}
+
+Vector2* Vector2::Clone()
+{
+    return new Vector2(x, z);
 }
 
 void Vector2::printVector()

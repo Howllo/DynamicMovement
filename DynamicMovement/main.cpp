@@ -23,16 +23,39 @@ enum ETestChar
     ETestPathFollowing,
 };
 
+enum ETest
+{
+    ETestPAOne,
+    ETestPATwo,
+};
+
 // Prototypes
 void createCharacterMovement(Character* v_character, Character* target, PathAlgorithm* _path, DynamicMovement* dynamicMovement,
     double deltaTime);
 Character* createNewCharacter(ETestChar tChar);
+int programAssignmentOne();
+int programAssignmentTwo();
 
 int main(int argc, char* argv[])
 {
+    constexpr ETest test = ETestPATwo;
+
+    switch(test)
+    {
+        case ETestPAOne:
+            return programAssignmentOne();
+        case ETestPATwo:
+            return programAssignmentTwo();
+        default:
+            return 0;
+    }
+}
+
+int programAssignmentTwo()
+{
     // Simulation
     constexpr double deltaTime = 0.50;
-    constexpr double simulatedSeconds = 0.5; //TODO: set it to 125 seconds. 
+    constexpr double simulatedSeconds = 125.0;
     double currentSimulatedSeconds = 0.0;
     auto* path = new PathAlgorithm();
     auto* dynamicMovement = new DynamicMovement();
@@ -79,6 +102,61 @@ int main(int argc, char* argv[])
     outfile.close();
     delete path;
     delete followPath;
+    delete dynamicMovement;
+    return 0;
+}
+
+int programAssignmentOne()
+{
+    // Simulation
+    constexpr double deltaTime = 0.50;
+    constexpr double simulatedSeconds = 50.0;
+    double currentSimulatedSeconds = 0.0;
+    auto* dynamicMovement = new DynamicMovement();
+    
+    // Create File
+    std::ofstream outfile;
+    outfile.open("C:/temp/TrajectoryData_TonyH.txt");
+    if(!outfile)
+    {
+        std::cout << "Error. Fail to open file." << std::endl; 
+        return 0;
+    }
+    
+    // Creating Character object array. Test objects: continueCharacter, fleeCharacter, seekCharacter, arriveCharacter
+    std::vector<Character*> vCharacters = {
+        createNewCharacter(ETestContinue),
+        createNewCharacter(ETestFlee),
+        createNewCharacter(ETestSeek),
+        createNewCharacter(ETestArrive)
+    }; 
+
+    // Setting up target.
+    Character* target = vCharacters[0];
+    
+    // Main Loop
+    while(currentSimulatedSeconds <= simulatedSeconds)
+    {
+        for(const auto& v_character : vCharacters)
+        {
+            // Time Step 0.
+            if(currentSimulatedSeconds == 0.0)
+            {
+                PrintClass::printCharacter(v_character, outfile, currentSimulatedSeconds);
+                continue;
+            }
+
+            // Movement
+            createCharacterMovement(v_character, target, nullptr, dynamicMovement, deltaTime);
+
+            // Print
+            PrintClass::printCharacter(v_character, outfile, currentSimulatedSeconds);
+        }
+        // Update Delta Time
+        currentSimulatedSeconds += deltaTime;
+    }
+    std::cout << "Finished printing!" << std::endl;
+    outfile.close();
     delete dynamicMovement;
     return 0;
 }
@@ -141,30 +219,3 @@ Character* createNewCharacter(ETestChar tChar)
     }
     return nullptr;
 }
-
-#pragma region PROGRAM ASSIGNMENT 1
-/*
-    // Creating Character object array. Test objects: continueCharacter, fleeCharacter, seekCharacter, arriveCharacter
-    std::vector<Character*> vCharacters = {continueCharacter, fleeCharacter, seekCharacter, arriveCharacter}; 
-
-    // Setting up target.
-    Character* target = continueCharacter;
-
- 
-for(const auto& v_character : vCharacters)
-{
-    // Time Step 0.
-    if(currentDeltaTime == 0.0)
-    {
-        printCharacter(v_character, outfile, currentDeltaTime);
-        continue;
-    }
-
-    // Movement
-    createCharacterMovement(v_character, target, deltaTime);
-
-    // Print
-    printCharacter(v_character, outfile, currentDeltaTime);
-}
- */
-#pragma endregion 

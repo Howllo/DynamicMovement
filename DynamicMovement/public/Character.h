@@ -34,7 +34,7 @@ class Character
     double maxVelocity;
     double maxAcceleration;
     CharacterBehavior target;
-    float arrivalRadius;
+    double arrivalRadius;
     double slowingRadius;
     double timeToTarget;
     int pathToFollow;
@@ -48,7 +48,7 @@ public:
     // Programming Assignment 1 - Constructor
     Character(int id, CharacterBehavior behavior, Vector2* iposition, Vector2* ivelocity, Vector2* ilinear,
         double iorientation, double irotation, double iangular, double maxvelocity, double maxacceleration,
-        CharacterBehavior target, float arrivalradius, double slowingradius, double timetotarget, bool collision);
+        CharacterBehavior target, double arrivalradius, double slowingradius, double timetotarget, bool collision);
 
     // Programming Assignment 2 - Constructor
     Character(int id, CharacterBehavior behavior, Vector2* iposition, Vector2* ivelocity, Vector2* ilinear,

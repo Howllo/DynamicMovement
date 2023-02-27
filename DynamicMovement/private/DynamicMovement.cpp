@@ -49,7 +49,7 @@ void DynamicMovement::dynamicUpdate(Character* character, SteeringOutput* steeri
 
     // Character Linear / Angular
     character->setLinear(*steering->GetLinear());
-    character->setAngular(steering->GetAngular());
+    character->setAngular(steering->GetAngular() );
 
     // Check Jitter
     if(character->getVelocity()->vector_length() < stopVecloity) { character->setVelocity(*new Vector2(0, 0)); }
