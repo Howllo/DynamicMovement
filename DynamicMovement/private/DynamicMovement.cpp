@@ -52,7 +52,7 @@ void DynamicMovement::dynamicUpdate(Character* character, SteeringOutput* steeri
     character->setAngular(steering->GetAngular() );
 
     // Check Jitter
-    if(character->getVelocity()->vector_length() < stopVecloity) { character->setVelocity(*new Vector2(0, 0)); }
+    if(character->getVelocity()->vector_length() < stopVelocity) { character->setVelocity(*new Vector2(0, 0)); }
 
     // Check Max Velocity
     if(character->getVelocity()->vector_length() > character->getMaxVelocity())
@@ -61,12 +61,12 @@ void DynamicMovement::dynamicUpdate(Character* character, SteeringOutput* steeri
     }
 }
 
-SteeringOutput* DynamicMovement::getSteeringContinue(Character* character)
+SteeringOutput* DynamicMovement::getSteeringContinue(const Character* character)
 {
     return new SteeringOutput(new Vector2(character->getLinear()->x, character->getLinear()->z), character->getAngular());
 }
 
-SteeringOutput* DynamicMovement::getSteeringSeek(Character* character, Character* target)
+SteeringOutput* DynamicMovement::getSteeringSeek(const Character* character, const Character* target)
 {
     auto* result = new SteeringOutput(new Vector2(0.0, 0.0), 0.0);
     result->SetLinear(*target->getPosition() - *character->getPosition());
@@ -76,7 +76,7 @@ SteeringOutput* DynamicMovement::getSteeringSeek(Character* character, Character
     return result;
 }
 
-SteeringOutput* DynamicMovement::getSteeringFlee(Character* character, Character* target)
+SteeringOutput* DynamicMovement::getSteeringFlee(const Character* character, const Character* target)
 {
     auto* result = new SteeringOutput(new Vector2(0.0, 0.0), 0.0);
     result->SetLinear(*character->getPosition() - *target->getPosition());
@@ -86,10 +86,10 @@ SteeringOutput* DynamicMovement::getSteeringFlee(Character* character, Character
     return  result;
 }
 
-SteeringOutput* DynamicMovement::getSteeringArrive(Character* character, Character* target)
+SteeringOutput* DynamicMovement::getSteeringArrive(const Character* character, const Character* target)
 {
     auto* result = new SteeringOutput(new Vector2(0.0, 0.0), 0.0);
-    auto* direction = new Vector2( *target->getPosition() - *character->getPosition());
+    const auto* direction = new Vector2( *target->getPosition() - *character->getPosition());
     const double distance = direction->vector_length();
     double arrivalSpeed = 0.0;
     
@@ -101,7 +101,7 @@ SteeringOutput* DynamicMovement::getSteeringArrive(Character* character, Charact
         arrivalSpeed = (character->getMaxVelocity() * distance) / character->getSlowingRadius();
 
     // Setting up arrival vector.
-    Vector2* arrival_velocity = new Vector2(*direction->vector_normalize() * arrivalSpeed);
+    const Vector2* arrival_velocity = new Vector2(*direction->vector_normalize() * arrivalSpeed);
     result->SetLinear(*arrival_velocity - *character->getVelocity() / character->getTimeToTarget());
     
     if(result->GetLinear()->vector_length() > character->getMaxAcceleration())
@@ -112,20 +112,21 @@ SteeringOutput* DynamicMovement::getSteeringArrive(Character* character, Charact
     delete direction;
     return result;
 }
-
-SteeringOutput* DynamicMovement::getSteeringFollowPath(Character* character, PathAlgorithm* path)
+SteeringOutput* DynamicMovement::getSteeringFollowPath(const Character* character, PathAlgorithm* path)
 {
-    currentParam = path->getParam(character->getPosition());
-    double targetParam = currentParam + character->getPathOffset();
-    auto* target = new Character(PathAlgorithm::pathGetPosition(path, targetParam));
+    
+    const double currentParam = PathAlgorithm::getParam(character->getPosition(), path);
+    const double targetParam = Vector2::min(1.0, currentParam + character->getPathOffset());
+    const auto* target = new Character(PathAlgorithm::pathGetPosition(path, targetParam));
     return getSteeringSeek(character, target);
 }
 
-void DynamicMovement::MemoryManagement(const SteeringOutput* newOutput, const SteeringOutput* oldOutput)
+bool DynamicMovement::MemoryManagement(const SteeringOutput* newOutput, const SteeringOutput* oldOutput)
 {
     if(!oldOutput || !newOutput || newOutput == oldOutput)
-        return;
+        return false ;
     delete oldOutput;
+    return true;
 }
 
 void DynamicMovement::checkCharacterBehavior(Character* character, SteeringOutput* newSteer)
@@ -133,24 +134,24 @@ void DynamicMovement::checkCharacterBehavior(Character* character, SteeringOutpu
     switch(character->getSteerBehavior())
     {
         case CONTINUE:
-            MemoryManagement(newSteer, conSteer);
-            conSteer = newSteer;
+            if(MemoryManagement(newSteer, conSteer))
+                conSteer = newSteer;
             break;
         case FLEE:
-            MemoryManagement(newSteer, fleeSteer);
-            fleeSteer = newSteer;
+            if(MemoryManagement(newSteer, fleeSteer))
+                fleeSteer = newSteer;
             break;
         case SEEK:
-            MemoryManagement(newSteer, seekSteer);
-            seekSteer = newSteer;
+            if(MemoryManagement(newSteer, seekSteer))
+                seekSteer = newSteer;
             break;
         case ARRIVE:
-            MemoryManagement(newSteer, arriveSteer);
-            arriveSteer = newSteer;
+            if(MemoryManagement(newSteer, arriveSteer))
+                arriveSteer = newSteer;
             break;
         case FOLLOW_PATH:
-            MemoryManagement(newSteer, followSteer);
-            followSteer = newSteer;
+            if(MemoryManagement(newSteer, followSteer))
+                followSteer = newSteer;
             break;
         case NONE:
             std::cout << "Character: " << character->getCharacterID() << " is set to behavior NONE. Fix it." << std::endl;

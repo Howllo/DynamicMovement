@@ -7,7 +7,6 @@
  ***************************************/
 
 #pragma once
-#include <ostream>
 #include <vector>
 
 class Vector2
@@ -21,7 +20,7 @@ class Vector2
     // Z axis of the vector.
     double z;
 
-    Vector2(Vector2* in);
+    Vector2(const Vector2* in);
     
     /**
      * \brief Used for constructing a vector object without array.
@@ -34,13 +33,13 @@ class Vector2
      * \brief Used for temporary requirements.
      * \param VM Takes in VectorMath Object to set points.
      */
-     void setPoint(Vector2* VM);
+     void setPoint(const Vector2* VM);
  
     /**
      * \brief Used to get the length using parthenon theorem.
      * \return Returns a double of the parthenon theorem.
      */
-    double vector_length();
+    double vector_length() const;
 
     /**
      * \brief Used to get the length using parthenon theorem.
@@ -53,15 +52,7 @@ class Vector2
      * \brief Use to normalize the vector.
      * \return Returns a instantiated vector.
      */
-    Vector2* vector_normalize();
-
-    /**
-     * \brief Used to get the same X/Z coordinate of a object in pathParam.
-     * \param param Takes in a the entire path to compare.
-     * \param pathParam Takes in the path param vector to be processed.
-     * \return Returns the index of the object that is the same as param.
-     */
-    static unsigned int which(double param, const std::vector<double>& pathParam);
+    Vector2* vector_normalize() const;
     
     /**
      * \brief Used to get the distance between two point.
@@ -80,6 +71,38 @@ class Vector2
      */
     static double distancePointPoint(const Vector2* A, const Vector2* B);
 
+    /**
+     * \brief Used to get the same X/Z coordinate of a object in pathParam.
+     * \param param Takes in a the entire path to compare.
+     * \param pathParam Takes in the path param vector to be processed.
+     * \return Returns the index of the object that is the same as param.
+     */
+    static std::vector<unsigned int> which(double param, const std::vector<double>& pathParam);
+    
+    /**
+       * \brief Used to finds the smallest unsigned int and returns it.
+       * \param f_n First number to be search.
+       * \param s_n Second number to be search.
+       * \return Returns either f_n or s_n as a double.
+       */
+    static double min(double f_n, double s_n);
+    
+    /**
+     * \brief Used to finds the largest unsigned int and returns it.
+     * \param smallest Used as a base-line for searching the largest.
+     * \param in_search The vector that will be searched for the largest number.
+     * \return Returns the largest double in the vector.
+     */
+    static double max(double smallest, const std::vector<double>& in_search);
+    
+    /**
+     * \brief Used to finds the largest unsigned int and returns it.
+     * \param smallest Used as a base-line for searching the largest.
+     * \param in_search The vector that will be searched for the largest.
+     * \return Returns the largest unsigned int in the vector.
+     */
+    static unsigned int max(unsigned int smallest, const std::vector<unsigned int>& in_search);
+    
     // Operator Overload
     Vector2 operator-(const Vector2 &right) const;
     Vector2 operator-(const double &right) const;
@@ -102,8 +125,8 @@ class Vector2
      * \brief Used to clone Vector2 objects.
      * \return Returns a NEW cloned object.
      */
-    Vector2* Clone();
+    Vector2* Clone() const;
     
     // For Debugging only.
-    void printVector();
+    void printVector() const;
 };

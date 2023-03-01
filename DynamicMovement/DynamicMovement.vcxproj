@@ -305,7 +305,6 @@
       <AdditionalIncludeDirectories>I:\College\UAH\CS - 330 - Game Dev AI\C++\DynamicMovement\DynamicMovement\public;I:\College\UAH\CS - 330 - Game Dev AI\C++\DynamicMovement\DynamicMovement\private;I:\College\UAH\CS - 330 - Game Dev AI\C++\DynamicMovement\DynamicMovement\public;I:\College\UAH\CS - 330 - Game Dev AI\C++\DynamicMovement\DynamicMovement\</AdditionalIncludeDirectories>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
-    <ClCompile Include="private\PrintClass.cpp" />
     <ClCompile Include="private\SteeringOutput.cpp" />
     <ClCompile Include="private\Vector2.cpp" />
   </ItemGroup>
@@ -313,7 +312,6 @@
     <ClInclude Include="public\Character.h" />
     <ClInclude Include="public\DynamicMovement.h" />
     <ClInclude Include="public\PathAlgorithm.h" />
-    <ClInclude Include="public\PrintClass.h" />
     <ClInclude Include="public\SteeringOutput.h" />
     <ClInclude Include="public\Vector2.h" />
   </ItemGroup>

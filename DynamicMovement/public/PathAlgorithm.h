@@ -11,8 +11,8 @@
 
 struct path_assemble
 {
-    path_assemble(int id, std::vector<class Vector2*> point, std::vector<double> d, std::vector<double> p,
-        unsigned int totalSegments)
+    path_assemble(const int id, const std::vector<class Vector2*>& point, const std::vector<double>& d,
+        const std::vector<double>& p, const unsigned int total_segments)
     {
         ID = id;
 
@@ -30,7 +30,7 @@ struct path_assemble
         {
             pathParam.push_back(i);
         }
-        segments = totalSegments;
+        segments = total_segments;
     }
 
     // Random ID for the graph.
@@ -71,7 +71,7 @@ public:
      * \param pathID Takes in a ID.
      * \return Return a path assemble structure.
      */
-    path_assemble* pathAssemble(int pathID);
+    path_assemble* pathAssemble(int pathID) const;
     
     /**
      * \brief Used to find closest segment.
@@ -80,7 +80,7 @@ public:
      * \param B Segment endpoint.
      * \return Returns closest segment to query point in 2D.
      */
-    static Vector2 closestPointSegment(Vector2* Q, Vector2* A, Vector2* B);
+    static Vector2 closestPointSegment(const Vector2* Q, Vector2* A, Vector2* B);
 
     /**
      * \brief To get the position of a path corresponding to given path parameter.
@@ -88,36 +88,41 @@ public:
      * \param param Takes in double of current target param.
      * \return Returns vector2.
      */
-    static Vector2* pathGetPosition(PathAlgorithm* path, double param);
+    static Vector2* pathGetPosition(const PathAlgorithm* path, const double param);
     
     /**
      * \brief Used to get the closest path to the character.
-     * \param charPosition Takes in a character vector2 position
+     * \param path Takes in a Path Algorithm object.
+     * \param position Takes in a character vector2 position
      * \return Returns a double.
      */
-    double getParam(Vector2* charPosition) const;
+    static double getParam(const Vector2* position, PathAlgorithm* path);
     
     /**
      * \brief Sets the normalized points.
      * \param path Takes in path assemble structure.
      */
     void setAssemblePoint(path_assemble* path);
+
+    /**
+     * \brief Used to get the path points from path.
+     * \return Returns the vector2 array of path points.
+     */
+    std::vector<Vector2*>& getPathPoints();
     
     /**
      * \brief Used to get path assemble.
      * \return Returns the address of the path assemble.
      */
-    path_assemble* getAssemblePoint();
-private:
-    /**
-     * \brief Used to ifnd the largest double and returns it.
-     * \param dis Find the largest double in the vector array.
-     * \return Returns the largest double in the vector.
-     */
-    double max(std::vector<double> dis);
+    path_assemble* getAssemblePoint() const;
 };
 
-inline path_assemble* PathAlgorithm::getAssemblePoint()
+inline std::vector<Vector2*>& PathAlgorithm::getPathPoints()
+{
+    return pathPoints;
+}
+
+inline path_assemble* PathAlgorithm::getAssemblePoint() const
 {
     return normalizedPoints;
 }

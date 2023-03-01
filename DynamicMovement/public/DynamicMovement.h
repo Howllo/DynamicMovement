@@ -7,17 +7,15 @@
  ***************************************/
 
 #pragma once
-#include "SteeringOutput.h"
 
 class DynamicMovement
 {
-    double stopVecloity = 0.02;
+    const double stopVelocity = 0.02;
     class SteeringOutput* conSteer;
     SteeringOutput* fleeSteer;
     SteeringOutput* seekSteer;
     SteeringOutput* arriveSteer;
     SteeringOutput* followSteer;
-    double currentParam;
 public:
     DynamicMovement();
     ~DynamicMovement();
@@ -35,7 +33,7 @@ public:
      * \param character Takes in a character object.
      * \return Returns steering output object.
      */
-    SteeringOutput* getSteeringContinue(Character* character);
+    SteeringOutput* getSteeringContinue(const Character* character);
 
     /**
      * \brief Gets the dynamic movement of the character seek.
@@ -43,7 +41,7 @@ public:
      * \param target Take is a character that is used as point reference.
      * \return Returns SteeringOutput object.
      */
-    SteeringOutput* getSteeringSeek(Character* character, Character* target);
+    SteeringOutput* getSteeringSeek(const Character* character, const Character* target);
 
     /**
      * \brief Used to get the movement for the character flee.
@@ -51,7 +49,7 @@ public:
      * \param target Take in a character object that will be one that the character object is moving away from.
      * \return Returns a SteeringOutput object.
      */
-    SteeringOutput* getSteeringFlee(Character* character, Character* target);
+    SteeringOutput* getSteeringFlee(const Character* character, const Character* target);
 
     /**
      * \brief Used to get the movement for the character arrive.
@@ -59,7 +57,7 @@ public:
      * \param target Take in a character object that will be one that is approached by arrival character.
      * \return Returns a SteeringOuput object.
      */
-    SteeringOutput* getSteeringArrive(Character* character, Character* target);
+    SteeringOutput* getSteeringArrive(const Character* character, const Character* target);
 
     /**
      * \brief Used to move character along a path.
@@ -67,7 +65,7 @@ public:
      * \param path Takes in a path object to move the character.
      * \return Returns a steering output object.
      */
-    SteeringOutput* getSteeringFollowPath(Character* character, class PathAlgorithm* path);
+    SteeringOutput* getSteeringFollowPath(const Character* character, class PathAlgorithm* path);
 
 private:
     /**
@@ -75,7 +73,7 @@ private:
      * \param newOutput Takes in a new steer object to be compared to old steer object.
      * \param oldOutput Uses the old steer object be compared.
      */
-    static void MemoryManagement(const SteeringOutput* newOutput, const SteeringOutput* oldOutput);
+    static bool MemoryManagement(const SteeringOutput* newOutput, const SteeringOutput* oldOutput);
 
     /**
      * \brief Used to check the behavior of the character object to reduce the size of function.
