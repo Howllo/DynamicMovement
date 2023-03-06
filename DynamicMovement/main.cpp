@@ -27,6 +27,7 @@ enum ETest
 {
     ETestPAOne,
     ETestPATwo,
+    EDebug
 };
 
 // Prototypes
@@ -37,10 +38,11 @@ static void checkForZeroes(double check, std::ofstream& outfile);
 static void printCharacter(Character* characters, std::ofstream &outfile, double deltaTime);
 int programAssignmentOne();
 int programAssignmentTwo();
+void Debug();
 
 int main(int argc, char* argv[])
 {
-    constexpr ETest test = ETestPATwo;
+    constexpr ETest test = EDebug;
 
     switch(test)
     {
@@ -48,9 +50,13 @@ int main(int argc, char* argv[])
             return programAssignmentOne();
         case ETestPATwo:
             return programAssignmentTwo();
+        case EDebug:
+            Debug();
+            break;
         default:  // NOLINT(clang-diagnostic-covered-switch-default)
             return 0;
     }
+    return 0;
 }
 
 int programAssignmentTwo()
@@ -220,6 +226,16 @@ Character* createNewCharacter(ETestChar tChar)
                 4, 2.0, 1, 0.04, false);
     }
     return nullptr;
+}
+
+void Debug()
+{
+    Vector2* T = new Vector2(5.0, 5.0);
+    Vector2* D = new Vector2(4.0, 4.0);
+    Vector2 V(*T - *D);
+    V.printVector();
+    V.setPoint(*T * *D);
+    V.printVector();
 }
 
 void checkForZeroes(double check, std::ofstream& outfile)

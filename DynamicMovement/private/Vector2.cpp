@@ -29,6 +29,12 @@ void Vector2::setPoint(const Vector2* VM)
     z = VM->z;
 }
 
+void Vector2::setPoint(const Vector2& v)
+{
+    x = v.x;
+    z = v.z;
+}
+
 double Vector2::vector_length() const
 {
     return sqrt(pow(x, 2) + pow(z, 2));
@@ -44,6 +50,15 @@ Vector2* Vector2::vector_normalize() const
     if(vector_length() != 0.0)
     {
         return new Vector2(x / vector_length(), z / vector_length());
+    }
+    return new Vector2(0, 0);
+}
+
+Vector2* Vector2::vector_normalize(const Vector2* v)
+{
+    if(vector_length(*v) != 0.0)
+    {
+        return new Vector2(v->x/ vector_length(*v), v->z / vector_length(*v));
     }
     return new Vector2(0, 0);
 }
@@ -77,10 +92,10 @@ double Vector2::min(double f_n, double s_n)
     return s_n;
 }
 
-double Vector2::max(const double smallest, const std::vector<double>& in_search)
+double Vector2::max(const double smallest, const std::vector<double>* in_search)
 {
     double largest = smallest;
-    for(const double i : in_search)
+    for(const double i : *in_search)
     {
         if(i > largest)
             largest = i;
@@ -196,19 +211,7 @@ Vector2& Vector2::operator/=(const double& right)
     return *this;
 }
 
-bool Vector2::operator==(const Vector2& right) const
-{
-    if(fabs(this->x - right.x)  < DBL_EPSILON && fabs(this->z - right.z) < DBL_EPSILON)
-        return true;
-    return false;
-}
-
-Vector2* Vector2::Clone() const
-{
-    return new Vector2(x, z);
-}
-
 void Vector2::printVector() const
 {
-    std::cout << "X is " << x << " Z is " << z << std::endl;
+    std::cout << "X is " << x << ". | Z is " << z << "." << std::endl;
 }

@@ -5,14 +5,14 @@
  * Declaration: This program is entirely my own work.
  *
  ***************************************/
-#pragma once
 
+#pragma once
 #include <vector>
 
 struct path_assemble
 {
-    path_assemble(const int id, const std::vector<class Vector2*>& point, const std::vector<double>& d,
-        const std::vector<double>& p, const unsigned int total_segments)
+    path_assemble(const int id, const std::vector<class Vector2*>& point, const std::vector<double>* dist_in,
+        const std::vector<double>* param_in, const unsigned int total_segments)
     {
         ID = id;
 
@@ -21,16 +21,18 @@ struct path_assemble
             points.push_back(i);
         }
 
-        for(auto i : d)
+        for(double i : *dist_in)
         {
             pathDistance.push_back(i);
         }
 
-        for(auto i: p)
+        for(auto i: *param_in)
         {
             pathParam.push_back(i);
         }
         segments = total_segments;
+        delete dist_in;
+        delete param_in;
     }
 
     // Random ID for the graph.
@@ -51,12 +53,10 @@ struct path_assemble
 
 class PathAlgorithm
 {
-private:
     std::vector<Vector2*> pathPoints;
     path_assemble* normalizedPoints;
 public:
     PathAlgorithm();
-    PathAlgorithm(double x_in, double z_in);
     ~PathAlgorithm();
 
     /**
@@ -69,7 +69,7 @@ public:
     /**
      * \brief Assemble a complete data structure.
      * \param pathID Takes in a ID.
-     * \return Return a path assemble structure.
+     * \return Return a NEW path assemble structure.
      */
     path_assemble* pathAssemble(int pathID) const;
     
@@ -96,7 +96,7 @@ public:
      * \param position Takes in a character vector2 position
      * \return Returns a double.
      */
-    static double getParam(const Vector2* position, PathAlgorithm* path);
+    static double getParam(const PathAlgorithm* path, const Vector2* position);
     
     /**
      * \brief Sets the normalized points.
@@ -108,21 +108,19 @@ public:
      * \brief Used to get the path points from path.
      * \return Returns the vector2 array of path points.
      */
-    std::vector<Vector2*>& getPathPoints();
+    std::vector<Vector2*> getPathPoints() const;
     
     /**
      * \brief Used to get path assemble.
      * \return Returns the address of the path assemble.
      */
     path_assemble* getAssemblePoint() const;
+
+    /**
+     * \brief Used to create a array full of in_date information on at size.
+     * \param in_data Take in a data that will be filling the vector.
+     * \param size Takes in a data that will set the size of the array.
+     * \return Returns the a pointer vector.
+     */
+    static std::vector<double>* rep(double in_data, unsigned int size);
 };
-
-inline std::vector<Vector2*>& PathAlgorithm::getPathPoints()
-{
-    return pathPoints;
-}
-
-inline path_assemble* PathAlgorithm::getAssemblePoint() const
-{
-    return normalizedPoints;
-}

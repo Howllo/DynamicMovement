@@ -70,7 +70,7 @@ SteeringOutput* DynamicMovement::getSteeringSeek(const Character* character, con
 {
     auto* result = new SteeringOutput(new Vector2(0.0, 0.0), 0.0);
     result->SetLinear(*target->getPosition() - *character->getPosition());
-    result->SetLinear(*result->GetLinear()->vector_normalize());
+    result->SetLinear(*Vector2::vector_normalize(result->GetLinear()));
     result->SetLinear(*result->GetLinear() * character->getMaxAcceleration());
     result->SetAngular(0.0);
     return result;
@@ -112,10 +112,11 @@ SteeringOutput* DynamicMovement::getSteeringArrive(const Character* character, c
     delete direction;
     return result;
 }
-SteeringOutput* DynamicMovement::getSteeringFollowPath(const Character* character, PathAlgorithm* path)
+
+SteeringOutput* DynamicMovement::getSteeringFollowPath(const Character* character, const PathAlgorithm* path)
 {
     
-    const double currentParam = PathAlgorithm::getParam(character->getPosition(), path);
+    const double currentParam = PathAlgorithm::getParam(path, character->getPosition());
     const double targetParam = Vector2::min(1.0, currentParam + character->getPathOffset());
     const auto* target = new Character(PathAlgorithm::pathGetPosition(path, targetParam));
     return getSteeringSeek(character, target);
@@ -123,7 +124,7 @@ SteeringOutput* DynamicMovement::getSteeringFollowPath(const Character* characte
 
 bool DynamicMovement::MemoryManagement(const SteeringOutput* newOutput, const SteeringOutput* oldOutput)
 {
-    if(!oldOutput || !newOutput || newOutput == oldOutput)
+    if(!newOutput || newOutput == oldOutput)
         return false ;
     delete oldOutput;
     return true;

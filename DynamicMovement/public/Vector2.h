@@ -30,17 +30,23 @@ class Vector2
     Vector2(double x_in, double z_in);
 
     /**
-     * \brief Used for temporary requirements.
-     * \param VM Takes in VectorMath Object to set points.
+    * \brief Used for setting X and Z points.
+    * \param VM Takes in VectorMath Object to set points.
+    */
+    void setPoint(const Vector2* VM);
+
+    /**
+     * \brief Used for setting X and Z points.
+     * \param v Takes in Vector2 Object to set points.
      */
-     void setPoint(const Vector2* VM);
- 
+    void setPoint(const Vector2& v);
+    
     /**
      * \brief Used to get the length using parthenon theorem.
      * \return Returns a double of the parthenon theorem.
      */
     double vector_length() const;
-
+    
     /**
      * \brief Used to get the length using parthenon theorem.
      * \param v Takes in a vector address to computer the length.
@@ -53,6 +59,12 @@ class Vector2
      * \return Returns a instantiated vector.
      */
     Vector2* vector_normalize() const;
+
+    /**
+     * \brief Use to normalize the vector.
+     * \return Returns a instantiated vector.
+     */
+    static Vector2* vector_normalize(const Vector2* v);
     
     /**
      * \brief Used to get the distance between two point.
@@ -93,7 +105,7 @@ class Vector2
      * \param in_search The vector that will be searched for the largest number.
      * \return Returns the largest double in the vector.
      */
-    static double max(double smallest, const std::vector<double>& in_search);
+    static double max(double smallest, const std::vector<double>* in_search);
     
     /**
      * \brief Used to finds the largest unsigned int and returns it.
@@ -119,13 +131,6 @@ class Vector2
     Vector2& operator*=(const double &right);
     Vector2& operator/=(const Vector2 &right);
     Vector2& operator/=(const double &right);
-    bool operator==(const Vector2 &right) const;
-
-    /**
-     * \brief Used to clone Vector2 objects.
-     * \return Returns a NEW cloned object.
-     */
-    Vector2* Clone() const;
     
     // For Debugging only.
     void printVector() const;

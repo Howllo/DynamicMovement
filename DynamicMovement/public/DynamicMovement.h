@@ -65,7 +65,7 @@ public:
      * \param path Takes in a path object to move the character.
      * \return Returns a steering output object.
      */
-    SteeringOutput* getSteeringFollowPath(const Character* character, class PathAlgorithm* path);
+    SteeringOutput* getSteeringFollowPath(const Character* character, const class PathAlgorithm* path);
 
 private:
     /**
