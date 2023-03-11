@@ -42,7 +42,7 @@ void Debug();
 
 int main(int argc, char* argv[])
 {
-    constexpr ETest test = EDebug;
+    constexpr ETest test = ETestPATwo;
 
     switch(test)
     {
@@ -89,7 +89,7 @@ int programAssignmentTwo()
     path->AddPath(-60, -35);
     path->AddPath(60, -60);
     path->AddPath(0, -85);
-    path->setAssemblePoint(path->pathAssemble(1));
+    path->pathAssemble(1);
     
     // Main Loop
     while(currentSimulatedSeconds <= simulatedSeconds)
@@ -223,7 +223,7 @@ Character* createNewCharacter(ETestChar tChar)
         case ETestPathFollowing:
             return new Character(2701, FOLLOW_PATH, new Vector2(20.0, 95.0),
                 new Vector2(0.0, 0.0), new Vector2(0.0, 0.0), 0.0, 0.0,
-                4, 2.0, 1, 0.04, false);
+                4.0, 2.0, 1, 0.04, false);
     }
     return nullptr;
 }

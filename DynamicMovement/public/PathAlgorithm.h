@@ -9,52 +9,22 @@
 #pragma once
 #include <vector>
 
-struct path_assemble
+class PathAlgorithm
 {
-    path_assemble(const int id, const std::vector<class Vector2*>& point, const std::vector<double>* dist_in,
-        const std::vector<double>* param_in, const unsigned int total_segments)
-    {
-        ID = id;
-
-        for(auto i : point)
-        {
-            points.push_back(i);
-        }
-
-        for(double i : *dist_in)
-        {
-            pathDistance.push_back(i);
-        }
-
-        for(auto i: *param_in)
-        {
-            pathParam.push_back(i);
-        }
-        segments = total_segments;
-        delete dist_in;
-        delete param_in;
-    }
-
-    // Random ID for the graph.
+    // Random ID for the path.
     int ID;
 
     // Points on the graphs with both X and Z.
-    std::vector<Vector2*> points;
+    std::vector<class Vector2*> points;
 
     // Distance between segments.
     std::vector<double> pathDistance;
 
     // Normalized Points. 0 - 1
-    std::vector<double> pathParam;
+    std::vector<double> param;
 
     // Total segments on the graph.
     unsigned int segments;
-};
-
-class PathAlgorithm
-{
-    std::vector<Vector2*> pathPoints;
-    path_assemble* normalizedPoints;
 public:
     PathAlgorithm();
     ~PathAlgorithm();
@@ -69,9 +39,8 @@ public:
     /**
      * \brief Assemble a complete data structure.
      * \param pathID Takes in a ID.
-     * \return Return a NEW path assemble structure.
      */
-    path_assemble* pathAssemble(int pathID) const;
+    void pathAssemble(int pathID);
     
     /**
      * \brief Used to find closest segment.
@@ -80,7 +49,7 @@ public:
      * \param B Segment endpoint.
      * \return Returns closest segment to query point in 2D.
      */
-    static Vector2 closestPointSegment(const Vector2* Q, Vector2* A, Vector2* B);
+    static Vector2 closestPointSegment(const Vector2* Q,const Vector2* A, const Vector2* B);
 
     /**
      * \brief To get the position of a path corresponding to given path parameter.
@@ -97,30 +66,10 @@ public:
      * \return Returns a double.
      */
     static double getParam(const PathAlgorithm* path, const Vector2* position);
-    
-    /**
-     * \brief Sets the normalized points.
-     * \param path Takes in path assemble structure.
-     */
-    void setAssemblePoint(path_assemble* path);
 
     /**
      * \brief Used to get the path points from path.
      * \return Returns the vector2 array of path points.
      */
     std::vector<Vector2*> getPathPoints() const;
-    
-    /**
-     * \brief Used to get path assemble.
-     * \return Returns the address of the path assemble.
-     */
-    path_assemble* getAssemblePoint() const;
-
-    /**
-     * \brief Used to create a array full of in_date information on at size.
-     * \param in_data Take in a data that will be filling the vector.
-     * \param size Takes in a data that will set the size of the array.
-     * \return Returns the a pointer vector.
-     */
-    static std::vector<double>* rep(double in_data, unsigned int size);
 };
